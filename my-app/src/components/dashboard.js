@@ -9,6 +9,7 @@ import {
   addDoc,
   deleteDoc,
   doc,
+  updateDoc,
 } from "firebase/firestore";
 
 import Box from "@mui/material/Box";
@@ -109,8 +110,10 @@ export const Dashboard = () => {
   const handleEditRequest = async () => {
     try {
       const itemDoc = doc(db, "Users", auth.currentUser.uid, "Items", curID);
-      await deleteDoc(itemDoc);
-      setupdateccompletedMSG("Item was Deleted");
+
+      await updateDoc(itemDoc, { Name: dialogInfoName });
+
+      setupdateccompletedMSG("Update Is Finished");
       setupdateccompleted(true);
       setopenDialog(false);
     } catch (e) {
