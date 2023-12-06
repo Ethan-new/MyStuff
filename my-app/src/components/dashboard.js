@@ -59,6 +59,10 @@ export const Dashboard = () => {
 
   //Current Id Being Edited
   const [curID, setCurID] = useState("");
+
+  //Data Refresh
+  const [toggle, setToggle] = useState(false);
+
   const itemsCollecionRef = collection(
     db,
     "Users",
@@ -82,7 +86,7 @@ export const Dashboard = () => {
     };
 
     getItemList();
-  }, []);
+  }, [toggle]);
 
   const handleEditClick = (id) => () => {
     setCurID(id);
@@ -114,6 +118,8 @@ export const Dashboard = () => {
       await updateDoc(itemDoc, { Name: dialogInfoName });
 
       setupdateccompletedMSG("Update Is Finished");
+      setToggle((prevState) => !prevState);
+
       setupdateccompleted(true);
       setopenDialog(false);
     } catch (e) {
@@ -147,6 +153,8 @@ export const Dashboard = () => {
       const itemDoc = doc(db, "Users", auth.currentUser.uid, "Items", curID);
       await deleteDoc(itemDoc);
       setupdateccompletedMSG("Item was Deleted");
+      setToggle((prevState) => !prevState);
+
       setupdateccompleted(true);
       setopenDialog(false);
     } catch (e) {
