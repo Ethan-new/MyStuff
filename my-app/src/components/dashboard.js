@@ -83,7 +83,7 @@ export const Dashboard = () => {
     getItemList();
   }, []);
 
-  const handleEditClick = (id) => {
+  const handleEditClick = (id) => () => {
     setCurID(id);
     setisASave(true);
     setisADelete(false);
@@ -106,8 +106,18 @@ export const Dashboard = () => {
 
     setopenDialog(true);
   };
-
-  const handleDeleteClick = (id) => {
+  const handleEditRequest = async () => {
+    try {
+      const itemDoc = doc(db, "Users", auth.currentUser.uid, "Items", curID);
+      await deleteDoc(itemDoc);
+      setupdateccompletedMSG("Item was Deleted");
+      setupdateccompleted(true);
+      setopenDialog(false);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const handleDeleteClick = (id) => () => {
     setCurID(id);
     setisASave(false);
     setisADelete(true);
@@ -224,7 +234,7 @@ export const Dashboard = () => {
   //Including Input Fields On Dialog Boxes
   let boxContent;
   if (isASave) {
-    confirmButton = <Button onClick={handleClose}>Save</Button>;
+    confirmButton = <Button onClick={handleEditRequest}>Save</Button>;
     boxContent = (
       <DialogContent>
         <DialogContentText>ItemID: {dialogInfo[0]}</DialogContentText>
