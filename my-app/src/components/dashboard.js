@@ -20,6 +20,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
+import Alert from "@mui/material/Alert";
 
 import {
   GridRowModes,
@@ -41,6 +42,9 @@ export const Dashboard = () => {
   const [dialogInfoQuantity, setdialogInfoQuantity] = useState("");
   const [dialogInfoTag, setdialogInfoTag] = useState("");
   const [dialogInfoNote, setdialogInfoNote] = useState("");
+
+  //Completed Update MSG
+  const [updateccompleted, setupdateccompleted] = useState(false);
 
   const itemsCollecionRef = collection(
     db,
@@ -95,15 +99,11 @@ export const Dashboard = () => {
     { field: "Name", headerName: "Name", width: 130 },
     { field: "Quantity", headerName: "Quantity", width: 130 },
     { field: "Tag", headerName: "Tag", width: 130 },
-    {
-      field: "Description",
-      headerName: "Description",
-      width: 200,
-    },
+
     {
       field: "Note",
       headerName: "Note",
-      width: 90,
+      width: 250,
     },
     {
       field: "actions",
@@ -147,22 +147,22 @@ export const Dashboard = () => {
     tempArray.push("Add Item");
     setdialogInfo(tempArray);
     setopenDialog(true);
-    /*
+  };
+  const addItemToDatabase = async () => {
     try {
       await addDoc(itemsCollecionRef, {
-        Name: "",
+        Name: dialogInfoName,
         Description: "",
-        Tag: "",
-        Quantity: "",
-        Note: "",
-        Location: "",
+        Tag: dialogInfoTag,
+        Quantity: dialogInfoQuantity,
+        Note: dialogInfoNote,
       });
+      setopenDialog(false);
+      setupdateccompleted(true);
     } catch (e) {
       console.log(e);
     }
-    */
   };
-
   const logout = async () => {
     try {
       await signOut(auth);
@@ -176,7 +176,7 @@ export const Dashboard = () => {
   if (isASave) {
     confirmButton = <Button onClick={handleClose}>Save</Button>;
   } else {
-    confirmButton = <Button onClick={handleClose}>Add Item</Button>;
+    confirmButton = <Button onClick={addItemToDatabase}>Add Item</Button>;
   }
   return (
     <div>
@@ -187,6 +187,12 @@ export const Dashboard = () => {
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={2}></Grid>
           <Grid item xs={8}>
+            {updateccompleted && (
+              <Alert severity="success">
+                Item successfully updated in the database
+              </Alert>
+            )}
+            <div></div>
             <div style={{ height: 400, width: "100%" }}>
               <DataGrid
                 rows={itemList}
