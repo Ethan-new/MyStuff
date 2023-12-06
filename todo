@@ -1,1 +1,13 @@
+PRIORITY
+finish update button (only works for name field right now)
+
+
+LESS IMPORTANT
+Allow multi deletes 
+Add a Navbar
+Make a home page
+redirect / url link to login page
 add loading display on all buttons when making requests to backend
+
+FINISHED
+make it so table updates once user makes a change 
