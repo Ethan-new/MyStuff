@@ -4,12 +4,14 @@ import { Auth } from "./components/auth";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Dashboard } from "./components/dashboard";
+import HomePage from "./components/homePage";
 import PrivateRoute from "./components/privateRoute";
 
 function App() {
   return (
     <Router>
       <Routes>
+        <Route exact path="/" element={<HomePage />} />
         <Route exact path="/login" element={<Auth />} />
         <Route
           exact

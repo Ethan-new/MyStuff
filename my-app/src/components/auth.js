@@ -84,19 +84,6 @@ export const Auth = () => {
         </Grid>
         <Grid item xs={2}></Grid>
       </Grid>
-
-      <input
-        placeholder="Email"
-        onChange={(e) => setEmail(e.target.value)}
-      ></input>
-
-      <input
-        placeholder="Password"
-        onChange={(e) => setPassword(e.target.value)}
-      ></input>
-      <button onClick={signIn}>Sign In</button>
-      <button onClick={logout}>Logout</button>
-      <button onClick={createAccount}>Create Account</button>
     </div>
   );
 };
