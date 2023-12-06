@@ -22,7 +22,7 @@ export const Auth = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  console.log(auth?.currentUser);
+  //console.log(auth?.currentUser);
 
   const createAccount = async () => {
     try {

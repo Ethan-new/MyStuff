@@ -34,6 +34,7 @@ export const Dashboard = () => {
   const [itemList, setitemList] = useState([]);
   const [dialogInfo, setdialogInfo] = useState([]);
   const [openDialog, setopenDialog] = useState(false);
+  const [isASave, setisASave] = useState(false);
 
   //DialogBox Inputs
   const [dialogInfoName, setdialogInfoName] = useState("");
@@ -56,7 +57,7 @@ export const Dashboard = () => {
           ...doc.data(),
           id: doc.id,
         }));
-        console.log(filteredData);
+        //console.log(filteredData);
         setitemList(filteredData);
       } catch (e) {
         console.log(e);
@@ -67,6 +68,7 @@ export const Dashboard = () => {
   }, []);
 
   const handleEditClick = (id) => () => {
+    setisASave(true);
     console.log(id);
     for (let i = 0; i < itemList.length; i++) {
       //console.log(itemList[i].name);
@@ -77,8 +79,10 @@ export const Dashboard = () => {
         tempArray.push(itemList[i].Quantity);
         tempArray.push(itemList[i].Tag);
         tempArray.push(itemList[i].Note);
+        tempArray.push("Edit Item");
         setdialogInfo(tempArray);
-        console.log(dialogInfo);
+        //console.log(dialogInfo);
+        i = itemList.length;
       }
     }
 
@@ -88,13 +92,13 @@ export const Dashboard = () => {
   const handleDeleteClick = (id) => () => {};
 
   const columns = [
-    { field: "Name", headerName: "Name", width: 70 },
+    { field: "Name", headerName: "Name", width: 130 },
     { field: "Quantity", headerName: "Quantity", width: 130 },
     { field: "Tag", headerName: "Tag", width: 130 },
     {
       field: "Description",
       headerName: "Description",
-      width: 90,
+      width: 200,
     },
     {
       field: "Note",
@@ -133,6 +137,17 @@ export const Dashboard = () => {
   };
 
   const addItem = async () => {
+    setisASave(false);
+    let tempArray = [];
+    tempArray.push("");
+    tempArray.push("Name");
+    tempArray.push("Quantity");
+    tempArray.push("Tag");
+    tempArray.push("Note");
+    tempArray.push("Add Item");
+    setdialogInfo(tempArray);
+    setopenDialog(true);
+    /*
     try {
       await addDoc(itemsCollecionRef, {
         Name: "",
@@ -145,6 +160,7 @@ export const Dashboard = () => {
     } catch (e) {
       console.log(e);
     }
+    */
   };
 
   const logout = async () => {
@@ -155,26 +171,41 @@ export const Dashboard = () => {
       console.log(err);
     }
   };
+  //Dialog Box Button. One for editing, One for adding new item
+  let confirmButton;
+  if (isASave) {
+    confirmButton = <Button onClick={handleClose}>Save</Button>;
+  } else {
+    confirmButton = <Button onClick={handleClose}>Add Item</Button>;
+  }
   return (
     <div>
       Hello
       <Button onClick={logout}>Logout</Button>
       <Button onClick={addItem}> ADD TETET</Button>
-      <div style={{ height: 400, width: "100%" }}>
-        <DataGrid
-          rows={itemList}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 5 },
-            },
-          }}
-          pageSizeOptions={[5, 10]}
-          checkboxSelection
-        />
-      </div>
+      <Box sx={{ width: "100%" }}>
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid item xs={2}></Grid>
+          <Grid item xs={8}>
+            <div style={{ height: 400, width: "100%" }}>
+              <DataGrid
+                rows={itemList}
+                columns={columns}
+                initialState={{
+                  pagination: {
+                    paginationModel: { page: 0, pageSize: 5 },
+                  },
+                }}
+                pageSizeOptions={[5, 10]}
+                checkboxSelection
+              />
+            </div>
+          </Grid>
+          <Grid item xs={2}></Grid>
+        </Grid>
+      </Box>
       <Dialog open={openDialog} onClose={handleClose}>
-        <DialogTitle>Edit Item</DialogTitle>
+        <DialogTitle>{dialogInfo[5]}</DialogTitle>
         <DialogContent>
           <DialogContentText>ItemID: {dialogInfo[0]}</DialogContentText>
 
@@ -224,7 +255,7 @@ export const Dashboard = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Save</Button>
+          {confirmButton}
         </DialogActions>
       </Dialog>
     </div>
