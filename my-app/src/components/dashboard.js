@@ -2,6 +2,8 @@ import { auth, db } from "../config/firebase";
 import { useEffect, useState } from "react";
 import { signOut } from "firebase/auth";
 
+import ResponsiveAppBar from "./navbar";
+
 import { Link, useNavigate } from "react-router-dom";
 import {
   getDocs,
@@ -154,7 +156,6 @@ export const Dashboard = () => {
       await deleteDoc(itemDoc);
       setupdateccompletedMSG("Item was Deleted");
       setToggle((prevState) => !prevState);
-
       setupdateccompleted(true);
       setopenDialog(false);
     } catch (e) {
@@ -390,9 +391,9 @@ export const Dashboard = () => {
 
   return (
     <div>
-      <Button onClick={logout}>Logout</Button>
-      <Button onClick={addItem}> Add Item</Button>
-      <Box sx={{ width: "100%" }}>
+      <ResponsiveAppBar></ResponsiveAppBar>
+
+      <Box sx={{ width: "100%", mt: "30px" }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={2}></Grid>
           <Grid item xs={8}>
@@ -417,11 +418,16 @@ export const Dashboard = () => {
                   },
                 }}
                 pageSizeOptions={[5, 10]}
-                checkboxSelection
               />
             </div>
           </Grid>
-          <Grid item xs={2}></Grid>
+          <Grid item xs={2}>
+            {" "}
+            <Button variant="contained" onClick={addItem}>
+              {" "}
+              Add Item
+            </Button>
+          </Grid>
         </Grid>
       </Box>
       <Dialog open={openDialog} onClose={handleClose}>
