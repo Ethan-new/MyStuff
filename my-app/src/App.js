@@ -4,13 +4,22 @@ import { Auth } from "./components/auth";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Dashboard } from "./components/dashboard";
+import PrivateRoute from "./components/privateRoute";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route exact path="/" element={<Auth />} />
-        <Route exact path="/dashboard" element={<Dashboard />} />
+        <Route exact path="/login" element={<Auth />} />
+        <Route
+          exact
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </Router>
   );
