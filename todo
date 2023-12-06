@@ -1,1 +1,8 @@
+PRIORITY
+finish update button (only works for name field right now)
+make it so table updates once user makes a change 
+
+LESS IMPORTANT
+Make a home page
+redirect / url link to login page
 add loading display on all buttons when making requests to backend
