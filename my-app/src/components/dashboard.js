@@ -3,7 +3,13 @@ import { useEffect, useState } from "react";
 import { signOut } from "firebase/auth";
 
 import { Link, useNavigate } from "react-router-dom";
-import { getDocs, collection, addDoc } from "firebase/firestore";
+import {
+  getDocs,
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -21,7 +27,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Alert from "@mui/material/Alert";
-
+import Typography from "@mui/material/Typography";
 import {
   GridRowModes,
   DataGrid,
@@ -33,9 +39,12 @@ import {
 export const Dashboard = () => {
   const navigate = useNavigate();
   const [itemList, setitemList] = useState([]);
+
+  //DialogBox Info
   const [dialogInfo, setdialogInfo] = useState([]);
   const [openDialog, setopenDialog] = useState(false);
   const [isASave, setisASave] = useState(false);
+  const [isADelete, setisADelete] = useState(false);
 
   //DialogBox Inputs
   const [dialogInfoName, setdialogInfoName] = useState("");
@@ -45,7 +54,10 @@ export const Dashboard = () => {
 
   //Completed Update MSG
   const [updateccompleted, setupdateccompleted] = useState(false);
+  const [updateccompletedMSG, setupdateccompletedMSG] = useState("");
 
+  //Current Id Being Edited
+  const [curID, setCurID] = useState("");
   const itemsCollecionRef = collection(
     db,
     "Users",
@@ -71,8 +83,10 @@ export const Dashboard = () => {
     getItemList();
   }, []);
 
-  const handleEditClick = (id) => () => {
+  const handleEditClick = (id) => {
+    setCurID(id);
     setisASave(true);
+    setisADelete(false);
     console.log(id);
     for (let i = 0; i < itemList.length; i++) {
       //console.log(itemList[i].name);
@@ -93,7 +107,39 @@ export const Dashboard = () => {
     setopenDialog(true);
   };
 
-  const handleDeleteClick = (id) => () => {};
+  const handleDeleteClick = (id) => {
+    setCurID(id);
+    setisASave(false);
+    setisADelete(true);
+    for (let i = 0; i < itemList.length; i++) {
+      //console.log(itemList[i].name);
+      if (itemList[i].id == id) {
+        let tempArray = [];
+        tempArray.push(id);
+        tempArray.push(itemList[i].Name);
+        tempArray.push(itemList[i].Quantity);
+        tempArray.push(itemList[i].Tag);
+        tempArray.push(itemList[i].Note);
+        tempArray.push("Delete Item");
+        setdialogInfo(tempArray);
+        //console.log(dialogInfo);
+        i = itemList.length;
+      }
+    }
+
+    setopenDialog(true);
+  };
+  const handleDeleteRequest = async () => {
+    try {
+      const itemDoc = doc(db, "Users", auth.currentUser.uid, "Items", curID);
+      await deleteDoc(itemDoc);
+      setupdateccompletedMSG("Item was Deleted");
+      setupdateccompleted(true);
+      setopenDialog(false);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const columns = [
     { field: "Name", headerName: "Name", width: 130 },
@@ -138,6 +184,7 @@ export const Dashboard = () => {
 
   const addItem = async () => {
     setisASave(false);
+    setisADelete(false);
     let tempArray = [];
     tempArray.push("");
     tempArray.push("Name");
@@ -157,6 +204,7 @@ export const Dashboard = () => {
         Quantity: dialogInfoQuantity,
         Note: dialogInfoNote,
       });
+      setupdateccompletedMSG("Item Added To Database");
       setopenDialog(false);
       setupdateccompleted(true);
     } catch (e) {
@@ -171,29 +219,174 @@ export const Dashboard = () => {
       console.log(err);
     }
   };
-  //Dialog Box Button. One for editing, One for adding new item
+  //Dialog Box Button. One for editing, One for adding new item, One for Deleting
   let confirmButton;
+  //Including Input Fields On Dialog Boxes
+  let boxContent;
   if (isASave) {
     confirmButton = <Button onClick={handleClose}>Save</Button>;
+    boxContent = (
+      <DialogContent>
+        <DialogContentText>ItemID: {dialogInfo[0]}</DialogContentText>
+
+        <Grid
+          container
+          rowSpacing={1}
+          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+          margin={2}
+        >
+          <Grid item xs={6}>
+            <TextField
+              id="outlined-basic"
+              label={dialogInfo[1]}
+              variant="outlined"
+              placeholder="Name"
+              onChange={(e) => setdialogInfoName(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              id="outlined-basic"
+              label={dialogInfo[2]}
+              variant="outlined"
+              placeholder="Quantity"
+              onChange={(e) => setdialogInfoQuantity(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              id="outlined-basic"
+              label={dialogInfo[3]}
+              variant="outlined"
+              placeholder="Tag"
+              onChange={(e) => setdialogInfoTag(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              id="outlined-basic"
+              label={dialogInfo[4]}
+              variant="outlined"
+              placeholder="Note"
+              onChange={(e) => setdialogInfoNote(e.target.value)}
+            />
+          </Grid>
+        </Grid>
+      </DialogContent>
+    );
+  } else if (isADelete) {
+    confirmButton = (
+      <Button variant="outlined" color="error" onClick={handleDeleteRequest}>
+        Delete
+      </Button>
+    );
+    boxContent = (
+      <DialogContent>
+        <Typography variant="h6" gutterBottom>
+          Once you delete there will be no way to recover this item
+        </Typography>
+        <DialogContentText>ItemID: {dialogInfo[0]}</DialogContentText>
+
+        <Grid
+          container
+          rowSpacing={1}
+          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+          margin={2}
+        >
+          <Grid item xs={6}>
+            <Typography variant="subtitle1" gutterBottom>
+              Name: {dialogInfo[1]}
+            </Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="subtitle1" gutterBottom>
+              Quantity: {dialogInfo[2]}
+            </Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="subtitle1" gutterBottom>
+              Tag: {dialogInfo[3]}
+            </Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="subtitle1" gutterBottom>
+              Tag: {dialogInfo[4]}
+            </Typography>
+          </Grid>
+        </Grid>
+      </DialogContent>
+    );
   } else {
     confirmButton = <Button onClick={addItemToDatabase}>Add Item</Button>;
+    boxContent = (
+      <DialogContent>
+        <Grid
+          container
+          rowSpacing={1}
+          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+          margin={2}
+        >
+          <Grid item xs={6}>
+            <TextField
+              id="outlined-basic"
+              label={dialogInfo[1]}
+              variant="outlined"
+              placeholder="Name"
+              onChange={(e) => setdialogInfoName(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              id="outlined-basic"
+              label={dialogInfo[2]}
+              variant="outlined"
+              placeholder="Quantity"
+              onChange={(e) => setdialogInfoQuantity(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              id="outlined-basic"
+              label={dialogInfo[3]}
+              variant="outlined"
+              placeholder="Tag"
+              onChange={(e) => setdialogInfoTag(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              id="outlined-basic"
+              label={dialogInfo[4]}
+              variant="outlined"
+              placeholder="Note"
+              onChange={(e) => setdialogInfoNote(e.target.value)}
+            />
+          </Grid>
+        </Grid>
+      </DialogContent>
+    );
   }
+
   return (
     <div>
-      Hello
       <Button onClick={logout}>Logout</Button>
-      <Button onClick={addItem}> ADD TETET</Button>
+      <Button onClick={addItem}> Add Item</Button>
       <Box sx={{ width: "100%" }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={2}></Grid>
           <Grid item xs={8}>
             {updateccompleted && (
-              <Alert severity="success">
-                Item successfully updated in the database
+              <Alert
+                onClose={() => {
+                  setupdateccompleted(false);
+                }}
+                severity="success"
+              >
+                {updateccompletedMSG}
               </Alert>
             )}
             <div></div>
-            <div style={{ height: 400, width: "100%" }}>
+            <div style={{ height: 580, width: "100%" }}>
               <DataGrid
                 rows={itemList}
                 columns={columns}
@@ -212,53 +405,7 @@ export const Dashboard = () => {
       </Box>
       <Dialog open={openDialog} onClose={handleClose}>
         <DialogTitle>{dialogInfo[5]}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>ItemID: {dialogInfo[0]}</DialogContentText>
-
-          <Grid
-            container
-            rowSpacing={1}
-            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-            margin={2}
-          >
-            <Grid item xs={6}>
-              <TextField
-                id="outlined-basic"
-                label={dialogInfo[1]}
-                variant="outlined"
-                placeholder="Name"
-                onChange={(e) => setdialogInfoName(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                id="outlined-basic"
-                label={dialogInfo[2]}
-                variant="outlined"
-                placeholder="Quantity"
-                onChange={(e) => setdialogInfoQuantity(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                id="outlined-basic"
-                label={dialogInfo[3]}
-                variant="outlined"
-                placeholder="Tag"
-                onChange={(e) => setdialogInfoTag(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                id="outlined-basic"
-                label={dialogInfo[4]}
-                variant="outlined"
-                placeholder="Note"
-                onChange={(e) => setdialogInfoNote(e.target.value)}
-              />
-            </Grid>
-          </Grid>
-        </DialogContent>
+        {boxContent}
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           {confirmButton}
