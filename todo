@@ -1,9 +1,10 @@
 PRIORITY
 finish update button (only works for name field right now)
-Add a Home Page
+Input Vaildation On Create Account
+Error Messages to user on Login and Create Account
 Add a Help Page
 Add a Account Page
-Add a Logo
+
 
 LESS IMPORTANT
 Allow multi deletes 
@@ -14,3 +15,7 @@ add loading display on all buttons when making requests to backend
 
 FINISHED
 make it so table updates once user makes a change 
+Add a Home Page
+Add a Logo
+Add Create Account Page
+Add Create Account Features
