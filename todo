@@ -2,7 +2,6 @@ PRIORITY
 finish update button (only works for name field right now)
 Add a Help Page
 Add a Account Page
-Loading Symbol for when table is loading data
 Add Forgot Password Function
 
 LESS IMPORTANT
@@ -22,3 +21,4 @@ Add Create Account Features
 Input Vaildation On Create Account
 Error Messages to user on Login and Create Account
 redirect / url link to login page *(Made a home page on /)
+Loading Symbol for when table is loading data
