@@ -99,7 +99,7 @@ export const Dashboard = () => {
     setCurID(id);
     setisASave(true);
     setisADelete(false);
-    console.log(id);
+
     for (let i = 0; i < itemList.length; i++) {
       //console.log(itemList[i].name);
       if (itemList[i].id == id) {
@@ -122,7 +122,26 @@ export const Dashboard = () => {
     try {
       const itemDoc = doc(db, "Users", auth.currentUser.uid, "Items", curID);
 
-      await updateDoc(itemDoc, { Name: dialogInfoName });
+      if (dialogInfoName == "") {
+        setdialogInfoName(dialogInfo[1]);
+      }
+      if (dialogInfoQuantity == "") {
+        setdialogInfoQuantity(dialogInfo[2]);
+      }
+      if (dialogInfoTag == "") {
+        setdialogInfoTag(dialogInfo[3]);
+      }
+
+      if (dialogInfoNote == "") {
+        setdialogInfoNote(dialogInfo[4]);
+      }
+
+      await updateDoc(itemDoc, {
+        Name: dialogInfoName,
+        Quantity: dialogInfoQuantity,
+        Tag: dialogInfoTag,
+        Note: dialogInfoNote,
+      });
 
       setupdateccompletedMSG("Update Is Finished");
       setToggle((prevState) => !prevState);
