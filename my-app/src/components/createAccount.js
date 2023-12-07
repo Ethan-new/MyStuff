@@ -16,30 +16,39 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
+import { Alert } from "@mui/material";
 
 export const CreateAccount = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
+  const [error, seterror] = useState(false);
+  const [errorMSG, seterrorMSG] = useState("");
   const navigate = useNavigate();
 
   //console.log(auth?.currentUser);
 
   const createAccount = async () => {
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      navigate("/login", { replace: true });
+      if (password == password2) {
+        await createUserWithEmailAndPassword(auth, email, password);
+        navigate("/login", { replace: true });
+      } else {
+        seterror(true);
+        seterrorMSG("Error: " + "Passwords must match");
+      }
     } catch (err) {
-      console.log(err);
-    }
-  };
-  const signIn = async () => {
-    if (auth?.currentUser?.email) {
-      navigate("/dashboard", { replace: true });
-    } else {
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-      } catch (err) {
-        console.log(err);
+      console.log(err.code);
+      seterror(true);
+
+      if (err.code === "auth/email-already-in-use") {
+        seterrorMSG("Error: " + "Email already in use");
+      } else if (err.code === "auth/weak-password") {
+        seterrorMSG("Error: " + "Password should be at least 6 characters");
+      } else if (err.code === "auth/invalid-email") {
+        seterrorMSG("Error: " + "Email must be vaild");
+      } else {
+        seterrorMSG("Error: " + err);
       }
     }
   };
@@ -81,7 +90,7 @@ export const CreateAccount = () => {
                 label="Confrim Password"
                 type="password"
                 variant="outlined"
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => setPassword2(e.target.value)}
               />
             </CardContent>
             <CardActions sx={{ justifyContent: "space-between" }}>
@@ -94,6 +103,24 @@ export const CreateAccount = () => {
             </CardActions>
           </Card>
         </Grid>
+        <Grid item xs={2}></Grid>
+        <Grid item xs={2}></Grid>
+
+        <Grid container justifyContent="center" alignItems="center" item xs={8}>
+          {error && (
+            <Alert
+              variant="filled"
+              sx={{ mt: "8px" }}
+              onClose={() => {
+                seterror(false);
+              }}
+              severity="error"
+            >
+              {errorMSG}
+            </Alert>
+          )}
+        </Grid>
+
         <Grid item xs={2}></Grid>
       </Grid>
     </div>

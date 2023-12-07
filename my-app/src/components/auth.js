@@ -16,10 +16,13 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
+import { Alert } from "@mui/material";
 
 export const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, seterror] = useState(false);
+  const [errorMSG, seterrorMSG] = useState("");
   const navigate = useNavigate();
 
   //console.log(auth?.currentUser);
@@ -38,6 +41,16 @@ export const Auth = () => {
       try {
         await signInWithEmailAndPassword(auth, email, password);
       } catch (err) {
+        seterror(true);
+        console.log(err.code);
+        if (err.code === "auth/invalid-credential") {
+          seterrorMSG("Error: " + "No Account with theses credentials");
+        } else if (err.code === "auth/invalid-email") {
+          seterrorMSG("Error: " + "Email must be vaild");
+        } else {
+          seterrorMSG("Error: " + err);
+        }
+
         console.log(err);
       }
     }
@@ -86,6 +99,24 @@ export const Auth = () => {
             </CardActions>
           </Card>
         </Grid>
+
+        <Grid item xs={2}></Grid>
+        <Grid item xs={2}></Grid>
+        <Grid container justifyContent="center" alignItems="center" item xs={8}>
+          {error && (
+            <Alert
+              variant="filled"
+              sx={{ mt: "8px" }}
+              onClose={() => {
+                seterror(false);
+              }}
+              severity="error"
+            >
+              {errorMSG}
+            </Alert>
+          )}
+        </Grid>
+
         <Grid item xs={2}></Grid>
       </Grid>
     </div>

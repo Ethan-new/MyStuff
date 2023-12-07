@@ -405,6 +405,7 @@ export const Dashboard = () => {
             </div>
             {updateccompleted && (
               <Alert
+                variant="filled"
                 sx={{ mt: "8px" }}
                 onClose={() => {
                   setupdateccompleted(false);
