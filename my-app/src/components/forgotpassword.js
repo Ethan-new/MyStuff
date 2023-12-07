@@ -4,6 +4,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 
 import { Link, useNavigate } from "react-router-dom";
@@ -17,27 +18,24 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import { Alert } from "@mui/material";
+import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
-export const CreateAccount = () => {
+export const ForgotPassword = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [password2, setPassword2] = useState("");
+
   const [error, seterror] = useState(false);
+  const [success, setsuccess] = useState(false);
+
   const [errorMSG, seterrorMSG] = useState("");
   const navigate = useNavigate();
 
   //console.log(auth?.currentUser);
 
-  const createAccount = async () => {
+  const resetPassword = async () => {
     try {
-      if (password == password2) {
-        await createUserWithEmailAndPassword(auth, email, password);
-        navigate("/login", { replace: true });
-      } else {
-        seterror(true);
-        seterrorMSG("Error: " + "Passwords must match");
-      }
+      await sendPasswordResetEmail(auth, email);
+      setsuccess(true);
     } catch (err) {
       console.log(err.code);
       seterror(true);
@@ -48,17 +46,11 @@ export const CreateAccount = () => {
         seterrorMSG("Error: " + "Password should be at least 6 characters");
       } else if (err.code === "auth/invalid-email") {
         seterrorMSG("Error: " + "Email must be vaild");
+      } else if (err.code == "auth/missing-email") {
+        seterrorMSG("Error: " + "Please enter an email");
       } else {
         seterrorMSG("Error: " + err);
       }
-    }
-  };
-
-  const logout = async () => {
-    try {
-      await signOut(auth);
-    } catch (err) {
-      console.log(err);
     }
   };
 
@@ -70,7 +62,7 @@ export const CreateAccount = () => {
           <Card>
             <CardContent>
               <Typography color="text.primary" gutterBottom>
-                Sign Up
+                Reset Password
               </Typography>
             </CardContent>
             <CardContent>
@@ -81,30 +73,13 @@ export const CreateAccount = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </CardContent>
-            <CardContent>
-              <TextField
-                id="outlined-basic"
-                label="Password"
-                type="password"
-                variant="outlined"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </CardContent>
-            <CardContent>
-              <TextField
-                id="outlined-basic"
-                label="Confrim Password"
-                type="password"
-                variant="outlined"
-                onChange={(e) => setPassword2(e.target.value)}
-              />
-            </CardContent>
+
             <CardActions sx={{ justifyContent: "space-between" }}>
               <Button onClick={() => navigate("/login", { replace: true })}>
                 Login
               </Button>
-              <Button variant="contained" onClick={createAccount}>
-                Create Account
+              <Button variant="contained" onClick={resetPassword}>
+                Reset
               </Button>
             </CardActions>
           </Card>
@@ -113,18 +88,32 @@ export const CreateAccount = () => {
         <Grid item xs={2}></Grid>
 
         <Grid container justifyContent="center" alignItems="center" item xs={8}>
-          {error && (
-            <Alert
-              variant="filled"
-              sx={{ mt: "8px" }}
-              onClose={() => {
-                seterror(false);
-              }}
-              severity="error"
-            >
-              {errorMSG}
-            </Alert>
-          )}
+          <Stack>
+            {success && (
+              <Alert
+                variant="filled"
+                sx={{ mt: "8px" }}
+                onClose={() => {
+                  setsuccess(false);
+                }}
+                severity="success"
+              >
+                Password reset link has been sent to your email
+              </Alert>
+            )}
+            {error && (
+              <Alert
+                variant="filled"
+                sx={{ mt: "8px" }}
+                onClose={() => {
+                  seterror(false);
+                }}
+                severity="error"
+              >
+                {errorMSG}
+              </Alert>
+            )}
+          </Stack>
         </Grid>
 
         <Grid item xs={2}></Grid>

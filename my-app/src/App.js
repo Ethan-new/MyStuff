@@ -7,6 +7,7 @@ import { Dashboard } from "./components/dashboard";
 import HomePage from "./components/homePage";
 import PrivateRoute from "./components/privateRoute";
 import { CreateAccount } from "./components/createAccount";
+import { ForgotPassword } from "./components/forgotpassword";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route exact path="/" element={<HomePage />} />
         <Route exact path="/login" element={<Auth />} />
         <Route exact path="/newaccount" element={<CreateAccount />} />
+        <Route exact path="/forgotpassword" element={<ForgotPassword />} />
         <Route
           exact
           path="/dashboard"

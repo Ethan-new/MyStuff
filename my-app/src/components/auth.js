@@ -17,6 +17,7 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import { Alert } from "@mui/material";
+import Typography from "@mui/material/Typography";
 
 export const Auth = () => {
   const [email, setEmail] = useState("");
@@ -71,6 +72,12 @@ export const Auth = () => {
         <Grid container justifyContent="center" alignItems="center" item xs={8}>
           <Card>
             <CardContent>
+              <Typography color="text.primary" gutterBottom>
+                Login
+              </Typography>
+            </CardContent>
+
+            <CardContent>
               <TextField
                 id="outlined-basic"
                 label="Email"
@@ -78,7 +85,7 @@ export const Auth = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </CardContent>
-            <CardContent>
+            <CardContent sx={{ mb: 0, pb: 0 }}>
               <TextField
                 id="outlined-basic"
                 label="Password"
@@ -87,6 +94,18 @@ export const Auth = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </CardContent>
+
+            <CardActions sx={{ pt: 0 }}>
+              {" "}
+              <Button
+                sx={{ fontSize: "10px" }}
+                onClick={() => {
+                  navigate("/forgotpassword", { replace: true });
+                }}
+              >
+                Forgot Password
+              </Button>
+            </CardActions>
             <CardActions sx={{ justifyContent: "space-between" }}>
               <Button
                 onClick={() => navigate("/newaccount", { replace: true })}

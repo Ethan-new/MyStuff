@@ -31,6 +31,8 @@ import Grid from "@mui/material/Grid";
 import Paper from "@mui/material/Paper";
 import Alert from "@mui/material/Alert";
 import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
+
 import {
   GridRowModes,
   DataGrid,
@@ -42,6 +44,7 @@ import {
 export const Dashboard = () => {
   const navigate = useNavigate();
   const [itemList, setitemList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   //DialogBox Info
   const [dialogInfo, setdialogInfo] = useState([]);
@@ -74,6 +77,7 @@ export const Dashboard = () => {
 
   useEffect(() => {
     const getItemList = async () => {
+      setIsLoading(true);
       try {
         const data = await getDocs(itemsCollecionRef);
         const filteredData = data.docs.map((doc) => ({
@@ -82,6 +86,7 @@ export const Dashboard = () => {
         }));
         //console.log(filteredData);
         setitemList(filteredData);
+        setIsLoading(false);
       } catch (e) {
         console.log(e);
       }
@@ -239,6 +244,7 @@ export const Dashboard = () => {
   let confirmButton;
   //Including Input Fields On Dialog Boxes
   let boxContent;
+  //Each Dialog Box
   if (isASave) {
     confirmButton = <Button onClick={handleEditRequest}>Save</Button>;
     boxContent = (
@@ -383,6 +389,28 @@ export const Dashboard = () => {
     );
   }
 
+  //Is Loading
+  let table;
+  if (isLoading) {
+    table = (
+      <Box sx={{ display: "flex", mx: "auto", width: 200 }}>
+        <CircularProgress sx={{ display: "flex", mx: "auto", width: 200 }} />{" "}
+      </Box>
+    );
+  } else {
+    table = (
+      <DataGrid
+        rows={itemList}
+        columns={columns}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 5 },
+          },
+        }}
+        pageSizeOptions={[5, 10, 20, 100]}
+      />
+    );
+  }
   return (
     <div>
       <ResponsiveAppBar></ResponsiveAppBar>
@@ -391,18 +419,7 @@ export const Dashboard = () => {
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={2}></Grid>
           <Grid item xs={8}>
-            <div style={{ height: 545, width: "100%" }}>
-              <DataGrid
-                rows={itemList}
-                columns={columns}
-                initialState={{
-                  pagination: {
-                    paginationModel: { page: 0, pageSize: 5 },
-                  },
-                }}
-                pageSizeOptions={[5, 10, 20, 100]}
-              />
-            </div>
+            <div style={{ height: 545, width: "100%" }}>{table}</div>
             {updateccompleted && (
               <Alert
                 variant="filled"
