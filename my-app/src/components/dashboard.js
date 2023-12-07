@@ -391,18 +391,7 @@ export const Dashboard = () => {
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={2}></Grid>
           <Grid item xs={8}>
-            {updateccompleted && (
-              <Alert
-                onClose={() => {
-                  setupdateccompleted(false);
-                }}
-                severity="success"
-              >
-                {updateccompletedMSG}
-              </Alert>
-            )}
-            <div></div>
-            <div style={{ height: 580, width: "100%" }}>
+            <div style={{ height: 545, width: "100%" }}>
               <DataGrid
                 rows={itemList}
                 columns={columns}
@@ -411,9 +400,20 @@ export const Dashboard = () => {
                     paginationModel: { page: 0, pageSize: 5 },
                   },
                 }}
-                pageSizeOptions={[5, 10]}
+                pageSizeOptions={[5, 10, 20, 100]}
               />
             </div>
+            {updateccompleted && (
+              <Alert
+                sx={{ mt: "8px" }}
+                onClose={() => {
+                  setupdateccompleted(false);
+                }}
+                severity="success"
+              >
+                {updateccompletedMSG}
+              </Alert>
+            )}
           </Grid>
           <Grid item xs={2}>
             {" "}
