@@ -1,5 +1,5 @@
 PRIORITY
-finish update button (only works for name field right now)
+
 Add a Help Page
 Add a Account Page
 Add error message on dashboard when system fails
@@ -23,3 +23,4 @@ Error Messages to user on Login and Create Account
 redirect / url link to login page *(Made a home page on /)
 Loading Symbol for when table is loading data
 Add Forgot Password Function
+finish update button (only works for name field right now)
