@@ -2,14 +2,14 @@ PRIORITY
 finish update button (only works for name field right now)
 Add a Help Page
 Add a Account Page
-
+Add error message on dashboard when system fails
 
 LESS IMPORTANT
+Add Sign up button on home page
+Add Navbar on log in and signup page
 Allow multi deletes 
-Add a Navbar
-Make a home page
-redirect / url link to login page
 add loading display on all buttons when making requests to backend
+Change the Heading and Logo From React App
 
 FINISHED
 make it so table updates once user makes a change 
@@ -18,4 +18,8 @@ Add a Logo
 Add Create Account Page
 Add Create Account Features
 Input Vaildation On Create Account
+Add a Navbar
 Error Messages to user on Login and Create Account
+redirect / url link to login page *(Made a home page on /)
+Loading Symbol for when table is loading data
+Add Forgot Password Function
