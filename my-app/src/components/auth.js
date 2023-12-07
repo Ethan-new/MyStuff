@@ -75,7 +75,11 @@ export const Auth = () => {
               />
             </CardContent>
             <CardActions sx={{ justifyContent: "space-between" }}>
-              <Button>Create Account</Button>
+              <Button
+                onClick={() => navigate("/newaccount", { replace: true })}
+              >
+                Create Account
+              </Button>
               <Button variant="contained" onClick={signIn}>
                 Sign In
               </Button>

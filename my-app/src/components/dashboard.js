@@ -227,20 +227,14 @@ export const Dashboard = () => {
         Note: dialogInfoNote,
       });
       setupdateccompletedMSG("Item Added To Database");
+      setToggle((prevState) => !prevState);
       setopenDialog(false);
       setupdateccompleted(true);
     } catch (e) {
       console.log(e);
     }
   };
-  const logout = async () => {
-    try {
-      await signOut(auth);
-      navigate("/login", { replace: true });
-    } catch (err) {
-      console.log(err);
-    }
-  };
+
   //Dialog Box Button. One for editing, One for adding new item, One for Deleting
   let confirmButton;
   //Including Input Fields On Dialog Boxes

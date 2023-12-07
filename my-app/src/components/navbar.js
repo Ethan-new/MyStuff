@@ -38,7 +38,10 @@ function ResponsiveAppBar() {
       console.log(err);
     }
   };
-
+  const dashboardNav = () => {
+    handleCloseUserMenu();
+    navigate("/dashboard", { replace: true });
+  };
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -109,11 +112,34 @@ function ResponsiveAppBar() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem
+                key="Home"
+                onClick={() => {
+                  handleCloseNavMenu();
+                  navigate("/", { replace: true });
+                }}
+              >
+                <Typography textAlign="center">Home</Typography>
+              </MenuItem>
+              <MenuItem
+                key="Dashboard"
+                onClick={() => {
+                  handleCloseNavMenu();
+                  console.log("Dashboard");
+                  navigate("/dashboard", { replace: true });
+                }}
+              >
+                <Typography textAlign="center">Dashboard</Typography>
+              </MenuItem>
+              <MenuItem
+                key="Help"
+                onClick={() => {
+                  handleCloseNavMenu();
+                  navigate("/help", { replace: true });
+                }}
+              >
+                <Typography textAlign="center">Help</Typography>
+              </MenuItem>
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
@@ -136,15 +162,37 @@ function ResponsiveAppBar() {
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                {page}
-              </Button>
-            ))}
+            <Button
+              key="Home"
+              onClick={() => {
+                handleCloseNavMenu();
+                navigate("/", { replace: true });
+              }}
+              sx={{ my: 2, color: "white", display: "block" }}
+            >
+              Home
+            </Button>
+            <Button
+              key="Dashboard"
+              onClick={() => {
+                handleCloseNavMenu();
+                navigate("/dashboard", { replace: true });
+              }}
+              sx={{ my: 2, color: "white", display: "block" }}
+            >
+              Dashboard
+            </Button>
+            <Button
+              key="Help"
+              disabled
+              onClick={() => {
+                handleCloseNavMenu();
+                navigate("/help", { replace: true });
+              }}
+              sx={{ my: 2, color: "white", display: "block" }}
+            >
+              Help
+            </Button>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
