@@ -7,9 +7,8 @@ Add a Account Page
 LESS IMPORTANT
 Allow multi deletes 
 Add a Navbar
-Make a home page
-redirect / url link to login page
 add loading display on all buttons when making requests to backend
+Change the Heading and Logo From React App
 
 FINISHED
 make it so table updates once user makes a change 
@@ -19,3 +18,4 @@ Add Create Account Page
 Add Create Account Features
 Input Vaildation On Create Account
 Error Messages to user on Login and Create Account
+redirect / url link to login page *(Made a home page on /)
