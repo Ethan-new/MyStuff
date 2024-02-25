@@ -454,7 +454,7 @@ export const Dashboard = () => {
           </Grid>
           <Grid item xs={2}>
             {" "}
-            <Button variant="contained" onClick={addItem}>
+            <Button variant="contained" onClick={addItem} style={{ marginRight:4 }}>
               {" "}
               Add Item
             </Button>
