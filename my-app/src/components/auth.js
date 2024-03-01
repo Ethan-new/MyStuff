@@ -79,7 +79,7 @@ export const Auth = () => {
 
             <CardContent>
               <TextField
-                id="outlined-basic"
+                id="outlined-basic1"
                 label="Email"
                 variant="outlined"
                 onChange={(e) => setEmail(e.target.value)}
@@ -87,7 +87,7 @@ export const Auth = () => {
             </CardContent>
             <CardContent sx={{ mb: 0, pb: 0 }}>
               <TextField
-                id="outlined-basic"
+                id="outlined-basic2"
                 label="Password"
                 type="password"
                 variant="outlined"
