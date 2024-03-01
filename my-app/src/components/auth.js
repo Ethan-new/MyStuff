@@ -70,7 +70,7 @@ export const Auth = () => {
       <Grid container spacing={2} marginY={20}>
         <Grid item xs={2}></Grid>
         <Grid container justifyContent="center" alignItems="center" item xs={8}>
-          <Typography color="text.primary" variant="h2" gutterBottom>
+          <Typography color="text.primary" variant="h3" gutterBottom>
             My Stuff
           </Typography>
         </Grid>
