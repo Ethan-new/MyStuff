@@ -67,9 +67,18 @@ export const Auth = () => {
 
   return (
     <div>
+      
+
+    
       <Grid container spacing={2} marginY={20}>
         <Grid item xs={2}></Grid>
-        <Grid container justifyContent="center" alignItems="center" item xs={8}>
+        <Grid container justifyContent="center" alignItems="center" item xs={8} >
+        <div><p>My Stuff</p></div>  
+        </Grid>
+        <Grid item xs={2}></Grid>
+        <Grid item xs={2}></Grid>
+        <Grid container justifyContent="center" alignItems="center" item xs={8} >
+        
           <Card>
             <CardContent>
               <Typography color="text.primary" gutterBottom>
