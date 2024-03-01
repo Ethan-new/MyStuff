@@ -70,6 +70,13 @@ export const Auth = () => {
       <Grid container spacing={2} marginY={20}>
         <Grid item xs={2}></Grid>
         <Grid container justifyContent="center" alignItems="center" item xs={8}>
+          <Typography color="text.primary" variant="h3" gutterBottom>
+            My Stuff
+          </Typography>
+        </Grid>
+        <Grid item xs={2}></Grid>
+        <Grid item xs={2}></Grid>
+        <Grid container justifyContent="center" alignItems="center" item xs={8}>
           <Card>
             <CardContent>
               <Typography color="text.primary" gutterBottom>
@@ -79,7 +86,7 @@ export const Auth = () => {
 
             <CardContent>
               <TextField
-                id="outlined-basic"
+                id="outlined-basic1"
                 label="Email"
                 variant="outlined"
                 onChange={(e) => setEmail(e.target.value)}
@@ -87,7 +94,7 @@ export const Auth = () => {
             </CardContent>
             <CardContent sx={{ mb: 0, pb: 0 }}>
               <TextField
-                id="outlined-basic"
+                id="outlined-basic2"
                 label="Password"
                 type="password"
                 variant="outlined"
