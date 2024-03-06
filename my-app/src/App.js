@@ -9,8 +9,20 @@ import PrivateRoute from "./components/privateRoute";
 import { CreateAccount } from "./components/createAccount";
 import { ForgotPassword } from "./components/forgotpassword";
 
+import { createTheme,ThemeProvider } from "@mui/material";
+
 function App() {
+
+  const theme = createTheme({
+    typography: {
+      fontFamily: [
+        'Inter',
+        'sans-serif',
+      ].join(','),
+    },});
+
   return (
+    <ThemeProvider theme={theme}>
     <Router>
       <Routes>
         <Route exact path="/" element={<HomePage />} />
@@ -28,6 +40,7 @@ function App() {
         />
       </Routes>
     </Router>
+    </ThemeProvider>
   );
 }
 

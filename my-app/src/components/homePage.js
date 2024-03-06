@@ -7,16 +7,18 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import ResponsiveAppBar from "./navbar";
 
+
 const HomePage = () => {
   return (
-    <div>
+    <div className='homepage_gradient_background'>
       <ResponsiveAppBar></ResponsiveAppBar>
       <Grid container spacing={2}>
-        <Grid item xs={2}></Grid>
+        <Grid item xs={2}></Grid> 
         <Grid item xs={8} sx={{ mx: "auto" }}>
-          <Typography variant="h1" gutterBottom>
-            Welcome To My Stuff
+          <Typography variant="h2" gutterBottom>
+            Open Source Inventory Management
           </Typography>
+          <p className="inter-Header">adas</p>
           <Typography variant="body1" gutterBottom>
             Welcome to My Stuff - Your Personal Inventory Management Solution!
             At My Stuff, we understand that keeping track of your belongings can
