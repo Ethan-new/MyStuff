@@ -434,7 +434,7 @@ export const Dashboard = () => {
     <div>
       <ResponsiveAppBar></ResponsiveAppBar>
 
-      <Box sx={{ width: "100%", mt: "30px" }}>
+      <Box sx={{ width: "100%", mt: "100px" }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={2}></Grid>
           <Grid item xs={8}>
@@ -454,7 +454,11 @@ export const Dashboard = () => {
           </Grid>
           <Grid item xs={2}>
             {" "}
-            <Button variant="contained" onClick={addItem} style={{ marginRight:4 }}>
+            <Button
+              variant="contained"
+              onClick={addItem}
+              style={{ marginRight: 4 }}
+            >
               {" "}
               Add Item
             </Button>
