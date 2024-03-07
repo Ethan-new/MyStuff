@@ -24,7 +24,12 @@ const HomePage = () => {
       >
         <Grid item xs={1}></Grid>
         <Grid item xs={10} sx={{ mx: "auto", mt: "10em" }}>
-          <Typography variant="h2" align="center" fontWeight={"bolder"}>
+          <Typography
+            variant="h2"
+            align="center"
+            fontWeight={"bolder"}
+            color={"#302d2d"}
+          >
             Open-Source IMS
           </Typography>
           <Typography

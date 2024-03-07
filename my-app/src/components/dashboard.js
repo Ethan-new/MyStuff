@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { signOut } from "firebase/auth";
 
 import ResponsiveAppBar from "./navbar";
+import PermanentDrawerLeft from "./sideNavBar";
 
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -432,9 +433,8 @@ export const Dashboard = () => {
   }
   return (
     <div>
-      <ResponsiveAppBar></ResponsiveAppBar>
-
-      <Box sx={{ width: "100%", mt: "100px" }}>
+      <PermanentDrawerLeft></PermanentDrawerLeft>
+      <Box sx={{ width: "100%" }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={2}></Grid>
           <Grid item xs={8}>

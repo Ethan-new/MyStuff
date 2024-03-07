@@ -58,7 +58,7 @@ function ResponsiveAppBar() {
   };
 
   return (
-    <AppBar component="nav">
+    <AppBar component="nav" position="fixed">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Icon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}>
