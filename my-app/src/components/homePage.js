@@ -20,19 +20,17 @@ const HomePage = () => {
         direction="column"
         alignItems="center"
         justifyContent="center"
+        paddingBottom={25}
       >
         <Grid item xs={1}></Grid>
         <Grid item xs={10} sx={{ mx: "auto", mt: "10em" }}>
           <Typography variant="h2" align="center" fontWeight={"bolder"}>
-            Open Source
-          </Typography>
-          <Typography variant="h2" align="center" fontWeight={"bolder"}>
-            Inventory Management
+            Open-Source IMS
           </Typography>
           <Typography
             variant="subtitle1"
             fontSize={32}
-            fontWeight={""}
+            fontWeight={"700"}
             align="center"
             color={"white"}
             gutterBottom
@@ -46,6 +44,7 @@ const HomePage = () => {
               height: 400,
               width: 800,
               borderRadius: "16px",
+              boxShadow: 3,
               //maxHeight: { xs: 233, md: 167 },
               //maxWidth: { xs: 350, md: 250 },
             }}
@@ -57,19 +56,19 @@ const HomePage = () => {
             fontSize={42}
             fontWeight={600}
             align="left"
-            color={"white"}
-            lineHeight={1.2}
+            color={"#16bde9"}
+            lineHeight={1}
           >
             Powerful Management System
           </Typography>
           <Typography
             variant="subtitle1"
-            fontSize={42}
+            fontSize={32}
             fontWeight={600}
             align="left"
             color={"white"}
           >
-            For Your Inventory
+            for your inventory
           </Typography>
 
           <Stack
@@ -94,6 +93,19 @@ const HomePage = () => {
           >
             Features
           </Typography>
+          <Stack
+            direction="row"
+            spacing={2}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Box component="section" sx={{ p: 2, border: "1px dashed grey" }}>
+              placeholder
+            </Box>
+            <Box component="section" sx={{ p: 2, border: "1px dashed grey" }}>
+              placeholder
+            </Box>
+          </Stack>
         </Grid>
         <Grid item xs={1}></Grid>
       </Grid>
