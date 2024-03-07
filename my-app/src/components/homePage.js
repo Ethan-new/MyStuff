@@ -6,50 +6,113 @@ import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import ResponsiveAppBar from "./navbar";
+import Stack from "@mui/material/Stack";
+
+import dashboardPic from "../assets/dashboard.png";
 
 const HomePage = () => {
   return (
-    <div>
+    <div className="homepage_gradient_background">
       <ResponsiveAppBar></ResponsiveAppBar>
-      <Grid container spacing={2}>
-        <Grid item xs={2}></Grid>
-        <Grid item xs={8} sx={{ mx: "auto" }}>
-          <Typography variant="h1" gutterBottom>
-            Welcome To My Stuff
+      <Grid
+        container
+        spacing={2}
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        paddingBottom={25}
+      >
+        <Grid item xs={1}></Grid>
+        <Grid item xs={10} sx={{ mx: "auto", mt: "10em" }}>
+          <Typography
+            variant="h2"
+            align="center"
+            fontWeight={"bolder"}
+            color={"#302d2d"}
+          >
+            Open-Source IMS
           </Typography>
-          <Typography variant="body1" gutterBottom>
-            Welcome to My Stuff - Your Personal Inventory Management Solution!
-            At My Stuff, we understand that keeping track of your belongings can
-            be a challenging task. Whether you're managing your home inventory,
-            organizing your wardrobe, or tracking your collectibles, we're here
-            to simplify the process for you. Say goodbye to clutter and
-            confusion and hello to a more organized life!
+          <Typography
+            variant="subtitle1"
+            fontSize={32}
+            fontWeight={"700"}
+            align="center"
+            color={"white"}
+            gutterBottom
+          >
+            Modern, Powerful, Affordable
           </Typography>
 
-          <Typography variant="h4" gutterBottom>
-            Why Choose My Stuff?
+          <Box
+            component="img"
+            sx={{
+              height: 400,
+              width: 800,
+              borderRadius: "16px",
+              boxShadow: 3,
+              //maxHeight: { xs: 233, md: 167 },
+              //maxWidth: { xs: 350, md: 250 },
+            }}
+            alt="The house from the offer."
+            src={dashboardPic}
+          />
+          <Typography
+            variant="subtitle1"
+            fontSize={42}
+            fontWeight={600}
+            align="left"
+            color={"#16bde9"}
+            lineHeight={1}
+          >
+            Powerful Management System
           </Typography>
-          <Typography variant="body1" gutterBottom>
-            📦 Effortless Organization: My Stuff makes it easy to catalog and
-            categorize all your possessions. With our user-friendly interface,
-            you'll have everything neatly organized in no time.
+          <Typography
+            variant="subtitle1"
+            fontSize={32}
+            fontWeight={600}
+            align="left"
+            color={"white"}
+          >
+            for your inventory
           </Typography>
-          <Typography variant="body1" gutterBottom>
-            🔍 Quick Search: Can't find that one item you're looking for? Our
-            powerful search feature will help you locate your belongings in
-            seconds.
+
+          <Stack
+            direction="row"
+            spacing={2}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Box component="section" sx={{ p: 2, border: "1px dashed grey" }}>
+              placeholder
+            </Box>
+            <Box component="section" sx={{ p: 2, border: "1px dashed grey" }}>
+              placeholder
+            </Box>
+          </Stack>
+          <Typography
+            variant="subtitle1"
+            fontSize={42}
+            fontWeight={600}
+            align="left"
+            color={"white"}
+          >
+            Features
           </Typography>
-          <Typography variant="body1" gutterBottom>
-            🔐 Privacy and Security: Your data's safety is our top priority. We
-            use state-of-the-art security measures to protect your information.
-          </Typography>
-          <Typography variant="body1" gutterBottom>
-            🌐 Cloud Storage: Store your data securely in the cloud, ensuring
-            you never lose your inventory, even if your device is lost or
-            damaged.
-          </Typography>
+          <Stack
+            direction="row"
+            spacing={2}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Box component="section" sx={{ p: 2, border: "1px dashed grey" }}>
+              placeholder
+            </Box>
+            <Box component="section" sx={{ p: 2, border: "1px dashed grey" }}>
+              placeholder
+            </Box>
+          </Stack>
         </Grid>
-        <Grid item xs={2}></Grid>
+        <Grid item xs={1}></Grid>
       </Grid>
     </div>
   );
