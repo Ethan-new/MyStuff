@@ -26,12 +26,7 @@ const HomePage = () => {
           <Typography variant="h2" align="center" fontWeight={"bolder"}>
             Open Source
           </Typography>
-          <Typography
-            variant="h2"
-            align="center"
-            fontWeight={"bolder"}
-            gutterBottom
-          >
+          <Typography variant="h2" align="center" fontWeight={"bolder"}>
             Inventory Management
           </Typography>
           <Typography
@@ -65,7 +60,7 @@ const HomePage = () => {
             color={"white"}
             lineHeight={1.2}
           >
-            A Management System
+            Powerful Management System
           </Typography>
           <Typography
             variant="subtitle1"
@@ -76,15 +71,30 @@ const HomePage = () => {
           >
             For Your Inventory
           </Typography>
+
+          <Stack
+            direction="row"
+            spacing={2}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Box component="section" sx={{ p: 2, border: "1px dashed grey" }}>
+              placeholder
+            </Box>
+            <Box component="section" sx={{ p: 2, border: "1px dashed grey" }}>
+              placeholder
+            </Box>
+          </Stack>
+          <Typography
+            variant="subtitle1"
+            fontSize={42}
+            fontWeight={600}
+            align="left"
+            color={"white"}
+          >
+            Features
+          </Typography>
         </Grid>
-        <Stack direction="row" spacing={2}>
-          <Box component="section" sx={{ p: 2, border: "1px dashed grey" }}>
-            This Box renders as an HTML section element.
-          </Box>
-          <Box component="section" sx={{ p: 2, border: "1px dashed grey" }}>
-            This Box renders as an HTML section element.
-          </Box>
-        </Stack>
         <Grid item xs={1}></Grid>
       </Grid>
     </div>
