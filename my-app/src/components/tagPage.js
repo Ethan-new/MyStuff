@@ -68,6 +68,9 @@ export const TagPage = () => {
   //Current Id Being Edited
   const [curID, setCurID] = useState("");
 
+  //Current Id Being Edited
+  const [tagList, setTagList] = useState([]);
+
   //Data Refresh
   const [toggle, setToggle] = useState(false);
 
@@ -91,12 +94,27 @@ export const TagPage = () => {
       }));
       //console.log(filteredData);
       setitemList(filteredData);
+      FilterTagList();
       setIsLoading(false);
     } catch (e) {
       console.log(e);
     }
   };
+  const FilterTagList = () => {
+    let tempArray = [];
 
+    console.log(itemList);
+    
+    itemList.forEach((ele) => {
+      console.log(ele.Tag);
+      if (tempArray.includes(ele.Tag)) {
+      } else {
+        tempArray.push(ele);
+      }
+    });
+    setTagList(tempArray);
+    console.log(tempArray);
+  };
   useEffect(() => {
     getItemList();
   }, [toggle]);
