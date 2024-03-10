@@ -16,7 +16,7 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import AllInclusiveIcon from "@mui/icons-material/AllInclusive";
-
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { auth, db } from "../config/firebase";
 import { useEffect, useState } from "react";
 
@@ -65,6 +65,12 @@ export default function PermanentDrawerLeft() {
     getItemList();
   }, []);
 
+  function getTagName(name) {
+    let tempName = "/dashboard/" + name;
+    //navigate(tempName);
+    return tempName;
+  }
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -99,12 +105,20 @@ export default function PermanentDrawerLeft() {
               <ListItemText primary={"Settings"} />
             </ListItemButton>
           </ListItem>
-          <ListItem key="All My Items" disablePadding>
-            <ListItemButton>
+          <ListItem key="All My Itemsli" disablePadding>
+            <ListItemButton onClick={(e) => navigate("/dashboard")}>
               <ListItemIcon>
                 <AllInclusiveIcon></AllInclusiveIcon>
               </ListItemIcon>
               <ListItemText primary={"All Items"} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem key="Tagsli" disablePadding>
+            <ListItemButton onClick={(e) => navigate("/tags")}>
+              <ListItemIcon>
+                <BookmarkIcon></BookmarkIcon>
+              </ListItemIcon>
+              <ListItemText primary={"Tags"} />
             </ListItemButton>
           </ListItem>
         </List>
@@ -119,7 +133,7 @@ export default function PermanentDrawerLeft() {
         >
           {itemList.map((text, index) => (
             <ListItem key={text.tag} disablePadding>
-              <ListItemButton>
+              <ListItemButton onClick={(e) => navigate(text.tag)}>
                 <ListItemText primary={text.tag} />
               </ListItemButton>
             </ListItem>

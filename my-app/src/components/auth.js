@@ -19,12 +19,18 @@ import Box from "@mui/material/Box";
 import { Alert } from "@mui/material";
 import Typography from "@mui/material/Typography";
 
+import { useContext } from "react";
+import { AuthContext } from "./authContext";
+
 export const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, seterror] = useState(false);
   const [errorMSG, seterrorMSG] = useState("");
   const navigate = useNavigate();
+
+  const { auth2, setAuth } = useContext(AuthContext);
+  const { authStatus, setAuthStatus } = useContext(AuthContext);
 
   //console.log(auth?.currentUser);
 
@@ -37,10 +43,18 @@ export const Auth = () => {
   };
   const signIn = async () => {
     if (auth?.currentUser?.email) {
-      navigate("/dashboard", { replace: true });
+      setAuthStatus({
+        type: "signin",
+        auth: auth,
+      });
+      navigate("/dashboard/", { replace: true });
     } else {
       try {
         await signInWithEmailAndPassword(auth, email, password);
+        setAuthStatus({
+          type: "signin",
+          auth: auth,
+        });
       } catch (err) {
         seterror(true);
         console.log(err.code);
