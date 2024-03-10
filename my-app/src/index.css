@@ -28,3 +28,7 @@ code {
 html {
   overflow: scroll;
 }
+
+.div-dashboard {
+  margin-left: initial;
+}

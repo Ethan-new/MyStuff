@@ -8,38 +8,33 @@ import HomePage from "./components/homePage";
 import PrivateRoute from "./components/privateRoute";
 import { CreateAccount } from "./components/createAccount";
 import { ForgotPassword } from "./components/forgotpassword";
+import { DashboardOneTag } from "./components/dashboardOneTag";
 
-import { createTheme,ThemeProvider } from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material";
+
+import { AuthProvider } from "./components/authContext";
 
 function App() {
-
   const theme = createTheme({
     typography: {
-      fontFamily: [
-        'Inter',
-        'sans-serif',
-      ].join(','),
-    },});
+      fontFamily: ["Inter", "sans-serif"].join(","),
+    },
+  });
 
   return (
     <ThemeProvider theme={theme}>
-    <Router>
-      <Routes>
-        <Route exact path="/" element={<HomePage />} />
-        <Route exact path="/login" element={<Auth />} />
-        <Route exact path="/newaccount" element={<CreateAccount />} />
-        <Route exact path="/forgotpassword" element={<ForgotPassword />} />
-        <Route
-          exact
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        />
-      </Routes>
-    </Router>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            <Route exact path="/" element={<HomePage />} />
+            <Route exact path="/login" element={<Auth />} />
+            <Route exact path="/newaccount" element={<CreateAccount />} />
+            <Route exact path="/forgotpassword" element={<ForgotPassword />} />
+            <Route exact path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/:tag" element={<DashboardOneTag />} />
+          </Routes>
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

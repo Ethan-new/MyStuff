@@ -14,6 +14,8 @@ import {
   deleteDoc,
   doc,
   updateDoc,
+  query,
+  where,
 } from "firebase/firestore";
 
 import Box from "@mui/material/Box";
@@ -43,7 +45,7 @@ import {
   GridRowEditStopReasons,
 } from "@mui/x-data-grid";
 
-export const Dashboard = () => {
+export const DashboardOneTag = () => {
   const [itemList, setitemList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -81,7 +83,8 @@ export const Dashboard = () => {
   const getItemList = async () => {
     setIsLoading(true);
     try {
-      const data = await getDocs(itemsCollecionRef);
+      const q = query(itemsCollecionRef, where("Tag", "==", "Animal"));
+      const data = await getDocs(q);
       const filteredData = data.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
@@ -446,7 +449,7 @@ export const Dashboard = () => {
     );
   }
   return (
-    <div className="div-dashboard">
+    <div>
       <PermanentDrawerLeft></PermanentDrawerLeft>
       <Box sx={{ width: "100%" }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
