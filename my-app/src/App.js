@@ -13,6 +13,7 @@ import { DashboardOneTag } from "./components/dashboardOneTag";
 import { createTheme, ThemeProvider } from "@mui/material";
 
 import { AuthProvider } from "./components/authContext";
+import { TagPage } from "./components/tagPage";
 
 function App() {
   const theme = createTheme({
@@ -31,6 +32,7 @@ function App() {
             <Route exact path="/newaccount" element={<CreateAccount />} />
             <Route exact path="/forgotpassword" element={<ForgotPassword />} />
             <Route exact path="/dashboard" element={<Dashboard />} />
+            <Route exact path="/tags" element={<TagPage />} />
             <Route path="/dashboard/:tag" element={<DashboardOneTag />} />
           </Routes>
         </Router>

@@ -1,17 +1,12 @@
 import { auth, db } from "../config/firebase";
 import React, { useEffect, useState, useContext, useReducer } from "react";
-import { signOut } from "firebase/auth";
+import { FacebookAuthProvider, signOut } from "firebase/auth";
 
 import ResponsiveAppBar from "./navbar";
 import PermanentDrawerLeft from "./sideNavBar";
 
 import { AuthContext } from "./authContext";
-import {
-  Link,
-  useNavigate,
-  useSearchParams,
-  useParams,
-} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   getDocs,
   collection,
@@ -41,6 +36,8 @@ import Paper from "@mui/material/Paper";
 import Alert from "@mui/material/Alert";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 
 import {
   GridRowModes,
@@ -49,8 +46,9 @@ import {
   GridActionsCellItem,
   GridRowEditStopReasons,
 } from "@mui/x-data-grid";
+import BookmarkBorder from "@mui/icons-material/BookmarkBorder";
 
-export const DashboardOneTag = () => {
+export const TagPage = () => {
   const [itemList, setitemList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -62,9 +60,6 @@ export const DashboardOneTag = () => {
 
   //DialogBox Inputs
   const [dialogInfoName, setdialogInfoName] = useState("");
-  const [dialogInfoQuantity, setdialogInfoQuantity] = useState("");
-  const [dialogInfoTag, setdialogInfoTag] = useState("");
-  const [dialogInfoNote, setdialogInfoNote] = useState("");
 
   //Completed Update MSG
   const [updateccompleted, setupdateccompleted] = useState(false);
@@ -78,27 +73,23 @@ export const DashboardOneTag = () => {
 
   const { authStatus, setAuthStatus } = useContext(AuthContext);
 
-  const { tag } = useParams();
-
-  //const [queryParameters] = useSearchParams();
-
-  const itemsCollecionRef = collection(
+  const tagCollecionRef = collection(
     db,
     "Users",
     authStatus.currentUser.uid,
-    "Items"
+    "FavTags"
   );
 
   const getItemList = async () => {
     setIsLoading(true);
     try {
-      const q = query(itemsCollecionRef, where("Tag", "==", tag));
-      const data = await getDocs(q);
+      const data = await getDocs(tagCollecionRef);
+
       const filteredData = data.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
       }));
-      //console.log(filteredData);
+
       setitemList(filteredData);
       setIsLoading(false);
     } catch (e) {
@@ -108,7 +99,7 @@ export const DashboardOneTag = () => {
 
   useEffect(() => {
     getItemList();
-  }, [toggle, tag]);
+  }, [toggle]);
 
   const handleEditClick = (id) => () => {
     setCurID(id);
@@ -120,17 +111,13 @@ export const DashboardOneTag = () => {
       if (itemList[i].id == id) {
         let tempArray = [];
         tempArray.push(id);
-        tempArray.push(itemList[i].Name);
-        tempArray.push(itemList[i].Quantity);
-        tempArray.push(itemList[i].Tag);
-        tempArray.push(itemList[i].Note);
+        tempArray.push(itemList[i].tag);
         tempArray.push("Edit Item");
         setdialogInfo(tempArray);
         //console.log(dialogInfo);
         i = itemList.length;
       }
     }
-
     setopenDialog(true);
   };
   const handleEditRequest = async () => {
@@ -139,29 +126,17 @@ export const DashboardOneTag = () => {
         db,
         "Users",
         authStatus.currentUser.uid,
-        "Items",
+        "FavTags",
         curID
       );
 
       if (dialogInfoName == "") {
         setdialogInfoName(dialogInfo[1]);
       }
-      if (dialogInfoQuantity == "") {
-        setdialogInfoQuantity(dialogInfo[2]);
-      }
-      if (dialogInfoTag == "") {
-        setdialogInfoTag(dialogInfo[3]);
-      }
-
-      if (dialogInfoNote == "") {
-        setdialogInfoNote(dialogInfo[4]);
-      }
 
       await updateDoc(itemDoc, {
-        Name: dialogInfoName,
-        Quantity: dialogInfoQuantity,
-        Tag: dialogInfoTag,
-        Note: dialogInfoNote,
+        tag: dialogInfoName,
+        fav: false,
       });
 
       setupdateccompletedMSG("Update Is Finished");
@@ -182,10 +157,7 @@ export const DashboardOneTag = () => {
       if (itemList[i].id == id) {
         let tempArray = [];
         tempArray.push(id);
-        tempArray.push(itemList[i].Name);
-        tempArray.push(itemList[i].Quantity);
-        tempArray.push(itemList[i].Tag);
-        tempArray.push(itemList[i].Note);
+        tempArray.push(itemList[i].tag);
         tempArray.push("Delete Item");
         setdialogInfo(tempArray);
         //console.log(dialogInfo);
@@ -201,7 +173,7 @@ export const DashboardOneTag = () => {
         db,
         "Users",
         authStatus.currentUser.uid,
-        "Items",
+        "FavTags",
         curID
       );
       await deleteDoc(itemDoc);
@@ -215,15 +187,7 @@ export const DashboardOneTag = () => {
   };
 
   const columns = [
-    { field: "Name", headerName: "Name", width: 130 },
-    { field: "Quantity", headerName: "Quantity", width: 130 },
-    { field: "Tag", headerName: "Tag", width: 130 },
-
-    {
-      field: "Note",
-      headerName: "Note",
-      width: 250,
-    },
+    { field: "tag", headerName: "Tag Name", width: 130 },
     {
       field: "actions",
       type: "actions",
@@ -231,22 +195,52 @@ export const DashboardOneTag = () => {
       width: 100,
       cellClassName: "actions",
 
-      getActions: ({ id }) => {
-        return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-          />,
-        ];
+      getActions: ({ id, fav }) => {
+        if (fav === true) {
+          return [
+            <GridActionsCellItem
+              icon={<EditIcon />}
+              label="Edit"
+              className="textPrimary"
+              onClick={handleEditClick(id)}
+              color="inherit"
+            />,
+            <GridActionsCellItem
+              disabled
+              icon={<BookmarkBorderIcon />}
+              label="Delete"
+              color="inherit"
+            />,
+            <GridActionsCellItem
+              icon={<DeleteIcon />}
+              label="Delete"
+              onClick={handleDeleteClick(id)}
+              color="inherit"
+            />,
+          ];
+        } else {
+          return [
+            <GridActionsCellItem
+              icon={<EditIcon />}
+              label="Edit"
+              className="textPrimary"
+              color="inherit"
+            />,
+            <GridActionsCellItem
+              disabled
+              icon={<BookmarkBorder />}
+              label="Delete"
+              onClick={handleDeleteClick(id)}
+              color="inherit"
+            />,
+            <GridActionsCellItem
+              icon={<DeleteIcon />}
+              label="Delete"
+              onClick={handleDeleteClick(id)}
+              color="inherit"
+            />,
+          ];
+        }
       },
     },
   ];
@@ -260,22 +254,15 @@ export const DashboardOneTag = () => {
     setisADelete(false);
     let tempArray = [];
     tempArray.push("");
-    tempArray.push("Name");
-    tempArray.push("Quantity");
-    tempArray.push("Tag");
-    tempArray.push("Note");
-    tempArray.push("Add Item");
+    tempArray.push("New Tag");
     setdialogInfo(tempArray);
     setopenDialog(true);
   };
   const addItemToDatabase = async () => {
     try {
-      await addDoc(itemsCollecionRef, {
-        Name: dialogInfoName,
-        Description: "",
-        Tag: dialogInfoTag,
-        Quantity: dialogInfoQuantity,
-        Note: dialogInfoNote,
+      await addDoc(tagCollecionRef, {
+        tag: dialogInfoName,
+        fav: false,
       });
       setupdateccompletedMSG("Item Added To Database");
       setToggle((prevState) => !prevState);
@@ -303,40 +290,13 @@ export const DashboardOneTag = () => {
           columnSpacing={{ xs: 1, sm: 2, md: 3 }}
           margin={2}
         >
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <TextField
               id="outlined-basic"
               label={dialogInfo[1]}
               variant="outlined"
               placeholder="Name"
               onChange={(e) => setdialogInfoName(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              id="outlined-basic"
-              label={dialogInfo[2]}
-              variant="outlined"
-              placeholder="Quantity"
-              onChange={(e) => setdialogInfoQuantity(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              id="outlined-basic"
-              label={dialogInfo[3]}
-              variant="outlined"
-              placeholder="Tag"
-              onChange={(e) => setdialogInfoTag(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              id="outlined-basic"
-              label={dialogInfo[4]}
-              variant="outlined"
-              placeholder="Note"
-              onChange={(e) => setdialogInfoNote(e.target.value)}
             />
           </Grid>
         </Grid>
@@ -361,31 +321,16 @@ export const DashboardOneTag = () => {
           columnSpacing={{ xs: 1, sm: 2, md: 3 }}
           margin={2}
         >
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <Typography variant="subtitle1" gutterBottom>
               Name: {dialogInfo[1]}
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography variant="subtitle1" gutterBottom>
-              Quantity: {dialogInfo[2]}
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography variant="subtitle1" gutterBottom>
-              Tag: {dialogInfo[3]}
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography variant="subtitle1" gutterBottom>
-              Tag: {dialogInfo[4]}
             </Typography>
           </Grid>
         </Grid>
       </DialogContent>
     );
   } else {
-    confirmButton = <Button onClick={addItemToDatabase}>Add Item</Button>;
+    confirmButton = <Button onClick={addItemToDatabase}>Add Tag</Button>;
     boxContent = (
       <DialogContent>
         <Grid
@@ -394,40 +339,13 @@ export const DashboardOneTag = () => {
           columnSpacing={{ xs: 1, sm: 2, md: 3 }}
           margin={2}
         >
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <TextField
               id="outlined-basic"
               label={dialogInfo[1]}
               variant="outlined"
               placeholder="Name"
               onChange={(e) => setdialogInfoName(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              id="outlined-basic"
-              label={dialogInfo[2]}
-              variant="outlined"
-              placeholder="Quantity"
-              onChange={(e) => setdialogInfoQuantity(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              id="outlined-basic"
-              label={dialogInfo[3]}
-              variant="outlined"
-              placeholder="Tag"
-              onChange={(e) => setdialogInfoTag(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              id="outlined-basic"
-              label={dialogInfo[4]}
-              variant="outlined"
-              placeholder="Note"
-              onChange={(e) => setdialogInfoNote(e.target.value)}
             />
           </Grid>
         </Grid>
@@ -458,7 +376,7 @@ export const DashboardOneTag = () => {
     );
   }
   return (
-    <div>
+    <div className="div-dashboard">
       <PermanentDrawerLeft></PermanentDrawerLeft>
       <Box sx={{ width: "100%" }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
@@ -486,13 +404,13 @@ export const DashboardOneTag = () => {
               style={{ marginRight: 4 }}
             >
               {" "}
-              Add Item
+              Add Tag
             </Button>
           </Grid>
         </Grid>
       </Box>
       <Dialog open={openDialog} onClose={handleClose}>
-        <DialogTitle>{dialogInfo[5]}</DialogTitle>
+        <DialogTitle>{dialogInfo[1]}</DialogTitle>
         {boxContent}
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
