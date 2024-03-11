@@ -36,6 +36,8 @@ import Paper from "@mui/material/Paper";
 import Alert from "@mui/material/Alert";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 
 import {
   GridRowModes,
@@ -44,6 +46,7 @@ import {
   GridActionsCellItem,
   GridRowEditStopReasons,
 } from "@mui/x-data-grid";
+import BookmarkBorder from "@mui/icons-material/BookmarkBorder";
 
 export const TagPage = () => {
   const [itemList, setitemList] = useState([]);
@@ -83,38 +86,30 @@ export const TagPage = () => {
     "Items"
   );
 
+  const tagCollecionRef = collection(
+    db,
+    "Users",
+    authStatus.currentUser.uid,
+    "FavTags"
+  );
+
   const getItemList = async () => {
     setIsLoading(true);
     try {
-      const q = query(itemsCollecionRef, where("Tag", "!=", ""));
-      const data = await getDocs(q);
+      const data = await getDocs(tagCollecionRef);
+
       const filteredData = data.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
       }));
       //console.log(filteredData);
       setitemList(filteredData);
-      FilterTagList();
       setIsLoading(false);
     } catch (e) {
       console.log(e);
     }
   };
-  const FilterTagList = () => {
-    let tempArray = [];
 
-    console.log(itemList);
-    
-    itemList.forEach((ele) => {
-      console.log(ele.Tag);
-      if (tempArray.includes(ele.Tag)) {
-      } else {
-        tempArray.push(ele);
-      }
-    });
-    setTagList(tempArray);
-    console.log(tempArray);
-  };
   useEffect(() => {
     getItemList();
   }, [toggle]);
@@ -224,15 +219,7 @@ export const TagPage = () => {
   };
 
   const columns = [
-    { field: "Name", headerName: "Name", width: 130 },
-    { field: "Quantity", headerName: "Quantity", width: 130 },
-    { field: "Tag", headerName: "Tag", width: 130 },
-
-    {
-      field: "Note",
-      headerName: "Note",
-      width: 250,
-    },
+    { field: "tag", headerName: "Tag Name", width: 130 },
     {
       field: "actions",
       type: "actions",
@@ -240,22 +227,53 @@ export const TagPage = () => {
       width: 100,
       cellClassName: "actions",
 
-      getActions: ({ id }) => {
-        return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-          />,
-        ];
+      getActions: ({ id, fav }) => {
+        console.log(id);
+        if (fav === true) {
+          return [
+            <GridActionsCellItem
+              icon={<EditIcon />}
+              label="Edit"
+              className="textPrimary"
+              onClick={handleEditClick(id)}
+              color="inherit"
+            />,
+            <GridActionsCellItem
+              icon={<BookmarkBorderIcon />}
+              label="Delete"
+              onClick={handleDeleteClick(id)}
+              color="inherit"
+            />,
+            <GridActionsCellItem
+              icon={<DeleteIcon />}
+              label="Delete"
+              onClick={handleDeleteClick(id)}
+              color="inherit"
+            />,
+          ];
+        } else {
+          return [
+            <GridActionsCellItem
+              icon={<EditIcon />}
+              label="Edit"
+              className="textPrimary"
+              onClick={handleEditClick(id)}
+              color="inherit"
+            />,
+            <GridActionsCellItem
+              icon={<BookmarkBorder />}
+              label="Delete"
+              onClick={handleDeleteClick(id)}
+              color="inherit"
+            />,
+            <GridActionsCellItem
+              icon={<DeleteIcon />}
+              label="Delete"
+              onClick={handleDeleteClick(id)}
+              color="inherit"
+            />,
+          ];
+        }
       },
     },
   ];
