@@ -98,15 +98,17 @@ export default function PermanentDrawerLeft() {
           }
         >
           <ListItem key="Settings" disablePadding>
-            <ListItemButton>
+            <ListItemButton disabled>
               <ListItemIcon>
                 <SettingsIcon></SettingsIcon>
               </ListItemIcon>
-              <ListItemText primary={"Settings"} />
+              <ListItemText primary={"Settings (coming soon)"} />
             </ListItemButton>
           </ListItem>
           <ListItem key="All My Itemsli" disablePadding>
-            <ListItemButton onClick={(e) => navigate("/dashboard")}>
+            <ListItemButton
+              onClick={(e) => navigate("/dashboard", { replace: true })}
+            >
               <ListItemIcon>
                 <AllInclusiveIcon></AllInclusiveIcon>
               </ListItemIcon>
@@ -114,7 +116,9 @@ export default function PermanentDrawerLeft() {
             </ListItemButton>
           </ListItem>
           <ListItem key="Tagsli" disablePadding>
-            <ListItemButton onClick={(e) => navigate("/tags")}>
+            <ListItemButton
+              onClick={(e) => navigate("/tags", { replace: true })}
+            >
               <ListItemIcon>
                 <BookmarkIcon></BookmarkIcon>
               </ListItemIcon>
@@ -133,7 +137,11 @@ export default function PermanentDrawerLeft() {
         >
           {itemList.map((text, index) => (
             <ListItem key={text.tag} disablePadding>
-              <ListItemButton onClick={(e) => navigate(text.tag)}>
+              <ListItemButton
+                onClick={(e) =>
+                  navigate("/dashboard/" + text.tag, { replace: true })
+                }
+              >
                 <ListItemText primary={text.tag} />
               </ListItemButton>
             </ListItem>

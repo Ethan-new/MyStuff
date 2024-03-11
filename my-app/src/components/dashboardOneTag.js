@@ -6,7 +6,12 @@ import ResponsiveAppBar from "./navbar";
 import PermanentDrawerLeft from "./sideNavBar";
 
 import { AuthContext } from "./authContext";
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useSearchParams,
+  useParams,
+} from "react-router-dom";
 import {
   getDocs,
   collection,
@@ -73,6 +78,10 @@ export const DashboardOneTag = () => {
 
   const { authStatus, setAuthStatus } = useContext(AuthContext);
 
+  const { tag } = useParams();
+
+  //const [queryParameters] = useSearchParams();
+
   const itemsCollecionRef = collection(
     db,
     "Users",
@@ -83,7 +92,7 @@ export const DashboardOneTag = () => {
   const getItemList = async () => {
     setIsLoading(true);
     try {
-      const q = query(itemsCollecionRef, where("Tag", "==", "Animal"));
+      const q = query(itemsCollecionRef, where("Tag", "==", tag));
       const data = await getDocs(q);
       const filteredData = data.docs.map((doc) => ({
         ...doc.data(),
@@ -99,7 +108,7 @@ export const DashboardOneTag = () => {
 
   useEffect(() => {
     getItemList();
-  }, [toggle]);
+  }, [toggle, tag]);
 
   const handleEditClick = (id) => () => {
     setCurID(id);

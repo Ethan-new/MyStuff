@@ -1,6 +1,6 @@
 import { auth, db } from "../config/firebase";
 import React, { useEffect, useState, useContext, useReducer } from "react";
-import { signOut } from "firebase/auth";
+import { FacebookAuthProvider, signOut } from "firebase/auth";
 
 import ResponsiveAppBar from "./navbar";
 import PermanentDrawerLeft from "./sideNavBar";
@@ -60,9 +60,6 @@ export const TagPage = () => {
 
   //DialogBox Inputs
   const [dialogInfoName, setdialogInfoName] = useState("");
-  const [dialogInfoQuantity, setdialogInfoQuantity] = useState("");
-  const [dialogInfoTag, setdialogInfoTag] = useState("");
-  const [dialogInfoNote, setdialogInfoNote] = useState("");
 
   //Completed Update MSG
   const [updateccompleted, setupdateccompleted] = useState(false);
@@ -71,20 +68,10 @@ export const TagPage = () => {
   //Current Id Being Edited
   const [curID, setCurID] = useState("");
 
-  //Current Id Being Edited
-  const [tagList, setTagList] = useState([]);
-
   //Data Refresh
   const [toggle, setToggle] = useState(false);
 
   const { authStatus, setAuthStatus } = useContext(AuthContext);
-
-  const itemsCollecionRef = collection(
-    db,
-    "Users",
-    authStatus.currentUser.uid,
-    "Items"
-  );
 
   const tagCollecionRef = collection(
     db,
@@ -102,7 +89,7 @@ export const TagPage = () => {
         ...doc.data(),
         id: doc.id,
       }));
-      //console.log(filteredData);
+
       setitemList(filteredData);
       setIsLoading(false);
     } catch (e) {
@@ -124,17 +111,13 @@ export const TagPage = () => {
       if (itemList[i].id == id) {
         let tempArray = [];
         tempArray.push(id);
-        tempArray.push(itemList[i].Name);
-        tempArray.push(itemList[i].Quantity);
-        tempArray.push(itemList[i].Tag);
-        tempArray.push(itemList[i].Note);
+        tempArray.push(itemList[i].tag);
         tempArray.push("Edit Item");
         setdialogInfo(tempArray);
         //console.log(dialogInfo);
         i = itemList.length;
       }
     }
-
     setopenDialog(true);
   };
   const handleEditRequest = async () => {
@@ -143,29 +126,17 @@ export const TagPage = () => {
         db,
         "Users",
         authStatus.currentUser.uid,
-        "Items",
+        "FavTags",
         curID
       );
 
       if (dialogInfoName == "") {
         setdialogInfoName(dialogInfo[1]);
       }
-      if (dialogInfoQuantity == "") {
-        setdialogInfoQuantity(dialogInfo[2]);
-      }
-      if (dialogInfoTag == "") {
-        setdialogInfoTag(dialogInfo[3]);
-      }
-
-      if (dialogInfoNote == "") {
-        setdialogInfoNote(dialogInfo[4]);
-      }
 
       await updateDoc(itemDoc, {
-        Name: dialogInfoName,
-        Quantity: dialogInfoQuantity,
-        Tag: dialogInfoTag,
-        Note: dialogInfoNote,
+        tag: dialogInfoName,
+        fav: false,
       });
 
       setupdateccompletedMSG("Update Is Finished");
@@ -186,10 +157,7 @@ export const TagPage = () => {
       if (itemList[i].id == id) {
         let tempArray = [];
         tempArray.push(id);
-        tempArray.push(itemList[i].Name);
-        tempArray.push(itemList[i].Quantity);
-        tempArray.push(itemList[i].Tag);
-        tempArray.push(itemList[i].Note);
+        tempArray.push(itemList[i].tag);
         tempArray.push("Delete Item");
         setdialogInfo(tempArray);
         //console.log(dialogInfo);
@@ -205,7 +173,7 @@ export const TagPage = () => {
         db,
         "Users",
         authStatus.currentUser.uid,
-        "Items",
+        "FavTags",
         curID
       );
       await deleteDoc(itemDoc);
@@ -228,7 +196,6 @@ export const TagPage = () => {
       cellClassName: "actions",
 
       getActions: ({ id, fav }) => {
-        console.log(id);
         if (fav === true) {
           return [
             <GridActionsCellItem
@@ -239,9 +206,9 @@ export const TagPage = () => {
               color="inherit"
             />,
             <GridActionsCellItem
+              disabled
               icon={<BookmarkBorderIcon />}
               label="Delete"
-              onClick={handleDeleteClick(id)}
               color="inherit"
             />,
             <GridActionsCellItem
@@ -257,10 +224,10 @@ export const TagPage = () => {
               icon={<EditIcon />}
               label="Edit"
               className="textPrimary"
-              onClick={handleEditClick(id)}
               color="inherit"
             />,
             <GridActionsCellItem
+              disabled
               icon={<BookmarkBorder />}
               label="Delete"
               onClick={handleDeleteClick(id)}
@@ -287,22 +254,15 @@ export const TagPage = () => {
     setisADelete(false);
     let tempArray = [];
     tempArray.push("");
-    tempArray.push("Name");
-    tempArray.push("Quantity");
-    tempArray.push("Tag");
-    tempArray.push("Note");
-    tempArray.push("Add Item");
+    tempArray.push("New Tag");
     setdialogInfo(tempArray);
     setopenDialog(true);
   };
   const addItemToDatabase = async () => {
     try {
-      await addDoc(itemsCollecionRef, {
-        Name: dialogInfoName,
-        Description: "",
-        Tag: dialogInfoTag,
-        Quantity: dialogInfoQuantity,
-        Note: dialogInfoNote,
+      await addDoc(tagCollecionRef, {
+        tag: dialogInfoName,
+        fav: false,
       });
       setupdateccompletedMSG("Item Added To Database");
       setToggle((prevState) => !prevState);
@@ -330,40 +290,13 @@ export const TagPage = () => {
           columnSpacing={{ xs: 1, sm: 2, md: 3 }}
           margin={2}
         >
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <TextField
               id="outlined-basic"
               label={dialogInfo[1]}
               variant="outlined"
               placeholder="Name"
               onChange={(e) => setdialogInfoName(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              id="outlined-basic"
-              label={dialogInfo[2]}
-              variant="outlined"
-              placeholder="Quantity"
-              onChange={(e) => setdialogInfoQuantity(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              id="outlined-basic"
-              label={dialogInfo[3]}
-              variant="outlined"
-              placeholder="Tag"
-              onChange={(e) => setdialogInfoTag(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              id="outlined-basic"
-              label={dialogInfo[4]}
-              variant="outlined"
-              placeholder="Note"
-              onChange={(e) => setdialogInfoNote(e.target.value)}
             />
           </Grid>
         </Grid>
@@ -388,31 +321,16 @@ export const TagPage = () => {
           columnSpacing={{ xs: 1, sm: 2, md: 3 }}
           margin={2}
         >
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <Typography variant="subtitle1" gutterBottom>
               Name: {dialogInfo[1]}
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography variant="subtitle1" gutterBottom>
-              Quantity: {dialogInfo[2]}
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography variant="subtitle1" gutterBottom>
-              Tag: {dialogInfo[3]}
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography variant="subtitle1" gutterBottom>
-              Tag: {dialogInfo[4]}
             </Typography>
           </Grid>
         </Grid>
       </DialogContent>
     );
   } else {
-    confirmButton = <Button onClick={addItemToDatabase}>Add Item</Button>;
+    confirmButton = <Button onClick={addItemToDatabase}>Add Tag</Button>;
     boxContent = (
       <DialogContent>
         <Grid
@@ -421,40 +339,13 @@ export const TagPage = () => {
           columnSpacing={{ xs: 1, sm: 2, md: 3 }}
           margin={2}
         >
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <TextField
               id="outlined-basic"
               label={dialogInfo[1]}
               variant="outlined"
               placeholder="Name"
               onChange={(e) => setdialogInfoName(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              id="outlined-basic"
-              label={dialogInfo[2]}
-              variant="outlined"
-              placeholder="Quantity"
-              onChange={(e) => setdialogInfoQuantity(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              id="outlined-basic"
-              label={dialogInfo[3]}
-              variant="outlined"
-              placeholder="Tag"
-              onChange={(e) => setdialogInfoTag(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              id="outlined-basic"
-              label={dialogInfo[4]}
-              variant="outlined"
-              placeholder="Note"
-              onChange={(e) => setdialogInfoNote(e.target.value)}
             />
           </Grid>
         </Grid>
@@ -513,13 +404,13 @@ export const TagPage = () => {
               style={{ marginRight: 4 }}
             >
               {" "}
-              Add Item
+              Add Tag
             </Button>
           </Grid>
         </Grid>
       </Box>
       <Dialog open={openDialog} onClose={handleClose}>
-        <DialogTitle>{dialogInfo[5]}</DialogTitle>
+        <DialogTitle>{dialogInfo[1]}</DialogTitle>
         {boxContent}
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>

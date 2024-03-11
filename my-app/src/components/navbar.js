@@ -198,7 +198,7 @@ function ResponsiveAppBar() {
               color="inherit"
               variant="outlined"
               onClick={() => {
-                navigate("/login");
+                navigate("/login", { replace: true });
               }}
             >
               Login
@@ -206,7 +206,7 @@ function ResponsiveAppBar() {
             <Button
               color="inherit"
               onClick={() => {
-                navigate("/newaccount");
+                navigate("/newaccount", { replace: true });
               }}
             >
               Create Account
