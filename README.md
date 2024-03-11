@@ -1,5 +1,8 @@
 # MyStuff
 
+Test Account:
+username: abc@gmail.com password: 123123
+
 ## Important
 
 MyStuff is in very early Development. Some links are broken and do not work. We are working as fast as possible to resolve all theses issues. Thank you for your patience.
