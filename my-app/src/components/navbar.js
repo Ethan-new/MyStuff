@@ -171,16 +171,6 @@ function ResponsiveAppBar() {
               Home
             </Button>
             <Button
-              key="Dashboard"
-              onClick={() => {
-                handleCloseNavMenu();
-                navigate("/dashboard", { replace: true });
-              }}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              Dashboard
-            </Button>
-            <Button
               key="Help"
               disabled
               onClick={() => {
