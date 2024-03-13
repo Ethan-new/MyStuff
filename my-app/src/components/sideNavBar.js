@@ -33,7 +33,7 @@ import {
 
 const drawerWidth = 240;
 
-export default function PermanentDrawerLeft() {
+export default function PermanentDrawerLeft({ menuTrigger }) {
   const navigate = useNavigate();
   const [itemList, setitemList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -63,7 +63,7 @@ export default function PermanentDrawerLeft() {
     };
 
     getItemList();
-  }, []);
+  }, [menuTrigger]);
 
   function getTagName(name) {
     let tempName = "/dashboard/" + name;

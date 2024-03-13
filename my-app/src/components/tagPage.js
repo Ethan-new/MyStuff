@@ -377,7 +377,7 @@ export const TagPage = () => {
   }
   return (
     <div className="div-dashboard">
-      <PermanentDrawerLeft></PermanentDrawerLeft>
+      <PermanentDrawerLeft menuTrigger={toggle}></PermanentDrawerLeft>
       <Box sx={{ width: "100%" }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={2}></Grid>
