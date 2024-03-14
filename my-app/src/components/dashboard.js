@@ -1,12 +1,10 @@
-import { auth, db } from "../config/firebase";
-import React, { useEffect, useState, useContext, useReducer } from "react";
-import { signOut } from "firebase/auth";
+import { db } from "../config/firebase";
+import React, { useEffect, useState, useContext } from "react";
 
-import ResponsiveAppBar from "./navbar";
 import PermanentDrawerLeft from "./sideNavBar";
 
 import { AuthContext } from "./authContext";
-import { Link, useNavigate } from "react-router-dom";
+
 import {
   getDocs,
   collection,
@@ -18,11 +16,10 @@ import {
 
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
+
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import SaveIcon from "@mui/icons-material/Save";
-import CancelIcon from "@mui/icons-material/Close";
+
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -30,18 +27,36 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
+
 import Alert from "@mui/material/Alert";
 import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 
 import {
-  GridRowModes,
   DataGrid,
-  GridToolbarContainer,
   GridActionsCellItem,
-  GridRowEditStopReasons,
+  GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
+
+function QuickSearchToolbar() {
+  return (
+    <Box
+      sx={{
+        p: 0.5,
+        pb: 0,
+      }}
+    >
+      <GridToolbarQuickFilter
+        quickFilterParser={(searchInput) =>
+          searchInput
+            .split(",")
+            .map((value) => value.trim())
+            .filter((value) => value !== "")
+        }
+      />
+    </Box>
+  );
+}
 
 export const Dashboard = () => {
   const [itemList, setitemList] = useState([]);
@@ -438,10 +453,11 @@ export const Dashboard = () => {
         columns={columns}
         initialState={{
           pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
+            paginationModel: { page: 0, pageSize: 10 },
           },
         }}
         pageSizeOptions={[5, 10, 20, 100]}
+        slots={{ toolbar: QuickSearchToolbar }}
       />
     );
   }
