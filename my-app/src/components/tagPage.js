@@ -38,6 +38,8 @@ import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
+import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
+import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 
 import {
   GridRowModes,
@@ -186,6 +188,38 @@ export const TagPage = () => {
     }
   };
 
+  const handleChangeFavStatus = (id, isFav, tag) => async () => {
+    console.log("Test");
+    let newVal = isFav;
+
+    if (isFav === true) {
+      newVal = false;
+    } else {
+      newVal = true;
+    }
+    try {
+      const itemDoc = doc(
+        db,
+        "Users",
+        authStatus.currentUser.uid,
+        "FavTags",
+        id
+      );
+
+      await updateDoc(itemDoc, {
+        tag: tag,
+        fav: newVal,
+      });
+
+      setupdateccompletedMSG("Update Is Finished");
+      setToggle((prevState) => !prevState);
+      setupdateccompleted(true);
+      //setopenDialog(false);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const columns = [
     { field: "tag", headerName: "Tag Name", width: 130 },
     {
@@ -195,48 +229,56 @@ export const TagPage = () => {
       width: 100,
       cellClassName: "actions",
 
-      getActions: ({ id, fav }) => {
-        if (fav === true) {
+      getActions: (params) => {
+        if (params.row.fav == true) {
           return [
             <GridActionsCellItem
               icon={<EditIcon />}
               label="Edit"
               className="textPrimary"
-              onClick={handleEditClick(id)}
+              onClick={handleEditClick(params.id)}
               color="inherit"
             />,
             <GridActionsCellItem
-              disabled
-              icon={<BookmarkBorderIcon />}
-              label="Delete"
+              icon={<BookmarkAddedIcon />}
+              onClick={handleChangeFavStatus(
+                params.id,
+                params.row.fav,
+                params.row.tag
+              )}
+              label="ChangeFav"
               color="inherit"
             />,
             <GridActionsCellItem
               icon={<DeleteIcon />}
               label="Delete"
-              onClick={handleDeleteClick(id)}
+              onClick={handleDeleteClick(params.id)}
               color="inherit"
             />,
           ];
         } else {
           return [
             <GridActionsCellItem
+              onClick={handleEditClick(params.id)}
               icon={<EditIcon />}
               label="Edit"
               className="textPrimary"
               color="inherit"
             />,
             <GridActionsCellItem
-              disabled
-              icon={<BookmarkBorder />}
-              label="Delete"
-              onClick={handleDeleteClick(id)}
+              icon={<BookmarkAddIcon />}
+              label="ChangeFav"
+              onClick={handleChangeFavStatus(
+                params.id,
+                params.row.fav,
+                params.row.tag
+              )}
               color="inherit"
             />,
             <GridActionsCellItem
               icon={<DeleteIcon />}
               label="Delete"
-              onClick={handleDeleteClick(id)}
+              onClick={handleDeleteClick(params.id)}
               color="inherit"
             />,
           ];
@@ -258,6 +300,7 @@ export const TagPage = () => {
     setdialogInfo(tempArray);
     setopenDialog(true);
   };
+
   const addItemToDatabase = async () => {
     try {
       await addDoc(tagCollecionRef, {
@@ -377,7 +420,7 @@ export const TagPage = () => {
   }
   return (
     <div className="div-dashboard">
-      <PermanentDrawerLeft></PermanentDrawerLeft>
+      <PermanentDrawerLeft menuTrigger={toggle}></PermanentDrawerLeft>
       <Box sx={{ width: "100%" }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={2}></Grid>
