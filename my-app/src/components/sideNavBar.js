@@ -36,6 +36,7 @@ const drawerWidth = 240;
 export default function PermanentDrawerLeft({ menuTrigger }) {
   const navigate = useNavigate();
   const [itemList, setitemList] = useState([]);
+  const [tagList, setTagList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const itemsCollecionRef = collection(
@@ -55,7 +56,17 @@ export default function PermanentDrawerLeft({ menuTrigger }) {
           id: doc.id,
         }));
         //console.log(filteredData);
+
         setitemList(filteredData);
+        let temp = [];
+        filteredData.forEach((e) => {
+          if (e.fav == true) {
+            temp.push(e);
+          }
+        });
+
+        setTagList(temp);
+
         setIsLoading(false);
       } catch (e) {
         console.log(e);
@@ -135,8 +146,8 @@ export default function PermanentDrawerLeft({ menuTrigger }) {
             </ListSubheader>
           }
         >
-          {itemList.map((text, index) => (
-            <ListItem key={text.tag} disablePadding>
+          {tagList.map((text, index) => (
+            <ListItem key={text.tag + index} disablePadding>
               <ListItemButton
                 onClick={(e) =>
                   navigate("/dashboard/" + text.tag, { replace: true })
