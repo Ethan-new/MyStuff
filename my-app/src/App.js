@@ -15,6 +15,8 @@ import { createTheme, ThemeProvider } from "@mui/material";
 import { AuthProvider } from "./components/authContext";
 import { TagPage } from "./components/tagPage";
 
+import NotFound from "./components/notFound";
+
 function App() {
   const theme = createTheme({
     typography: {
@@ -34,6 +36,7 @@ function App() {
             <Route exact path="/dashboard" element={<Dashboard />} />
             <Route exact path="/tags" element={<TagPage />} />
             <Route path="/dashboard/:tag" element={<DashboardOneTag />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>
       </AuthProvider>
