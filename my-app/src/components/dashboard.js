@@ -19,7 +19,7 @@ import Button from "@mui/material/Button";
 
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-
+import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -60,6 +60,7 @@ function QuickSearchToolbar() {
 
 export const Dashboard = () => {
   const [itemList, setitemList] = useState([]);
+  const [tagList, setTagList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   //DialogBox Info
@@ -93,6 +94,13 @@ export const Dashboard = () => {
     "Items"
   );
 
+  const TagCollecionRef = collection(
+    db,
+    "Users",
+    authStatus.currentUser.uid,
+    "FavTags"
+  );
+
   const getItemList = async () => {
     setIsLoading(true);
     try {
@@ -103,6 +111,16 @@ export const Dashboard = () => {
       }));
       //console.log(filteredData);
       setitemList(filteredData);
+
+      const data2 = await getDocs(TagCollecionRef);
+      const filteredData2 = data2.docs.map((doc) => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      //console.log(filteredData);
+
+      setTagList(filteredData2);
+
       setIsLoading(false);
     } catch (e) {
       console.log(e);
@@ -217,10 +235,30 @@ export const Dashboard = () => {
     }
   };
 
+  function displayTagInfo(p) {
+    let temp = "";
+    let type = typeof p.row.Tag;
+    if (type == "string") {
+      return p.row.Tag;
+    } else {
+      p.row.Tag.forEach((e, index) => {
+        temp = temp + e.tag + ", ";
+      });
+
+      temp = temp.substring(0, temp.length - 2);
+      return temp;
+    }
+  }
+
   const columns = [
     { field: "Name", headerName: "Name", width: 130 },
     { field: "Quantity", headerName: "Quantity", width: 130 },
-    { field: "Tag", headerName: "Tag", width: 130 },
+    {
+      field: "Tag",
+      headerName: "Tag",
+      width: 230,
+      valueGetter: displayTagInfo,
+    },
 
     {
       field: "Note",
@@ -273,6 +311,7 @@ export const Dashboard = () => {
   };
   const addItemToDatabase = async () => {
     try {
+      console.log(dialogInfoTag);
       await addDoc(itemsCollecionRef, {
         Name: dialogInfoName,
         Description: "",
@@ -416,12 +455,21 @@ export const Dashboard = () => {
             />
           </Grid>
           <Grid item xs={6}>
-            <TextField
-              id="outlined-basic"
-              label={dialogInfo[3]}
-              variant="outlined"
-              placeholder="Tag"
-              onChange={(e) => setdialogInfoTag(e.target.value)}
+            <Autocomplete
+              multiple
+              id="tags-standard"
+              options={tagList}
+              getOptionLabel={(option) => option.tag}
+              onChange={(e, sel) => setdialogInfoTag(sel)}
+              defaultValue={[]}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  label={dialogInfo[3]}
+                  placeholder="Tag"
+                />
+              )}
             />
           </Grid>
           <Grid item xs={6}>
@@ -464,11 +512,13 @@ export const Dashboard = () => {
   return (
     <div className="div-dashboard">
       <PermanentDrawerLeft></PermanentDrawerLeft>
+
       <Box sx={{ width: "100%" }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={2}></Grid>
           <Grid item xs={8}>
             <div style={{ height: 545, width: "100%" }}>{table}</div>
+
             {updateccompleted && (
               <Alert
                 variant="filled"
