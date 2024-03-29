@@ -75,6 +75,8 @@ export const Dashboard = () => {
   const [dialogInfoTag, setdialogInfoTag] = useState("");
   const [dialogInfoNote, setdialogInfoNote] = useState("");
 
+  const [dialogInfoTagList, setdialogInfoTagList] = useState([]);
+
   //Completed Update MSG
   const [updateccompleted, setupdateccompleted] = useState(false);
   const [updateccompletedMSG, setupdateccompletedMSG] = useState("");
@@ -140,6 +142,7 @@ export const Dashboard = () => {
       //console.log(itemList[i].name);
       if (itemList[i].id == id) {
         let tempArray = [];
+        returnTagInfo(itemList[i].Tag);
         tempArray.push(id);
         tempArray.push(itemList[i].Name);
         tempArray.push(itemList[i].Quantity);
@@ -170,9 +173,9 @@ export const Dashboard = () => {
       if (dialogInfoQuantity == "") {
         setdialogInfoQuantity(dialogInfo[2]);
       }
-      if (dialogInfoTag == "") {
-        setdialogInfoTag(dialogInfo[3]);
-      }
+      console.log(tagList);
+      console.log(dialogInfoTag);
+      console.log(dialogInfoTagList);
 
       if (dialogInfoNote == "") {
         setdialogInfoNote(dialogInfo[4]);
@@ -201,6 +204,7 @@ export const Dashboard = () => {
     for (let i = 0; i < itemList.length; i++) {
       //console.log(itemList[i].name);
       if (itemList[i].id == id) {
+        returnTagInfo(itemList[i].Tag);
         let tempArray = [];
         tempArray.push(id);
         tempArray.push(itemList[i].Name);
@@ -234,6 +238,18 @@ export const Dashboard = () => {
       console.log(e);
     }
   };
+
+  function returnTagInfo(p) {
+    let temp = [];
+
+    p.forEach((e, index) => {
+      console.log(e);
+      temp.push(e);
+    });
+
+    console.log(temp);
+    setdialogInfoTagList(temp);
+  }
 
   function displayTagInfo(p) {
     let temp = "";
@@ -311,7 +327,6 @@ export const Dashboard = () => {
   };
   const addItemToDatabase = async () => {
     try {
-      console.log(dialogInfoTag);
       await addDoc(itemsCollecionRef, {
         Name: dialogInfoName,
         Description: "",
@@ -364,12 +379,17 @@ export const Dashboard = () => {
             />
           </Grid>
           <Grid item xs={6}>
-            <TextField
-              id="outlined-basic"
-              label={dialogInfo[3]}
-              variant="outlined"
-              placeholder="Tag"
-              onChange={(e) => setdialogInfoTag(e.target.value)}
+            <Autocomplete
+              multiple
+              id="tags-standard"
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              options={tagList}
+              getOptionLabel={(option) => option.tag}
+              onChange={(e, sel) => setdialogInfoTag(sel)}
+              defaultValue={dialogInfoTagList}
+              renderInput={(params) => (
+                <TextField {...params} variant="standard" label={"Tags"} />
+              )}
             />
           </Grid>
           <Grid item xs={6}>
@@ -414,9 +434,19 @@ export const Dashboard = () => {
             </Typography>
           </Grid>
           <Grid item xs={6}>
-            <Typography variant="subtitle1" gutterBottom>
-              Tag: {dialogInfo[3]}
-            </Typography>
+            <Autocomplete
+              multiple
+              id="tags-standard"
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              options={tagList}
+              getOptionLabel={(option) => option.tag}
+              onChange={(e, sel) => setdialogInfoTag(sel)}
+              defaultValue={dialogInfoTagList}
+              readOnly
+              renderInput={(params) => (
+                <TextField {...params} variant="standard" label={"Tags"} />
+              )}
+            />
           </Grid>
           <Grid item xs={6}>
             <Typography variant="subtitle1" gutterBottom>
@@ -467,7 +497,6 @@ export const Dashboard = () => {
                   {...params}
                   variant="standard"
                   label={dialogInfo[3]}
-                  placeholder="Tag"
                 />
               )}
             />
