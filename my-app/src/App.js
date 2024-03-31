@@ -35,7 +35,7 @@ function App() {
             <Route exact path="/forgotpassword" element={<ForgotPassword />} />
             <Route exact path="/dashboard" element={<Dashboard />} />
             <Route exact path="/tags" element={<TagPage />} />
-            <Route path="/dashboard/:tag" element={<DashboardOneTag />} />
+            <Route path="/dashboard/:tag" element={<Dashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>

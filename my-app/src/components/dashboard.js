@@ -4,6 +4,7 @@ import React, { useEffect, useState, useContext } from "react";
 import PermanentDrawerLeft from "./sideNavBar";
 
 import { AuthContext } from "./authContext";
+import { useParams } from "react-router-dom";
 
 import {
   getDocs,
@@ -84,10 +85,14 @@ export const Dashboard = () => {
   //Current Id Being Edited
   const [curID, setCurID] = useState("");
 
+  //Only one tag
+  const [oneTag, setOneTag] = useState(false);
   //Data Refresh
   const [toggle, setToggle] = useState(false);
 
   const { authStatus, setAuthStatus } = useContext(AuthContext);
+
+  const { tag } = useParams();
 
   const itemsCollecionRef = collection(
     db,
@@ -105,6 +110,7 @@ export const Dashboard = () => {
 
   const getItemList = async () => {
     setIsLoading(true);
+
     try {
       const data = await getDocs(itemsCollecionRef);
       const filteredData = data.docs.map((doc) => ({
@@ -114,6 +120,18 @@ export const Dashboard = () => {
       //console.log(filteredData);
       setitemList(filteredData);
 
+      if (tag !== undefined) {
+        let finalList = [];
+        filteredData.forEach((e, x) => {
+          e.Tag.forEach((e2, y) => {
+            if (e2.tag === tag) {
+              //no need to check the rest of array
+              finalList.push(e);
+            }
+          });
+        });
+        setitemList(finalList);
+      }
       const data2 = await getDocs(TagCollecionRef);
       const filteredData2 = data2.docs.map((doc) => ({
         ...doc.data(),
@@ -131,7 +149,7 @@ export const Dashboard = () => {
 
   useEffect(() => {
     getItemList();
-  }, [toggle]);
+  }, [toggle, tag]);
 
   const handleEditClick = (id) => () => {
     setCurID(id);
