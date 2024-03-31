@@ -125,7 +125,7 @@ export const Dashboard = () => {
         filteredData.forEach((e, x) => {
           e.Tag.forEach((e2, y) => {
             if (e2.tag === tag) {
-              //no need to check the rest of array
+              //todo: exit array early here
               finalList.push(e);
             }
           });
