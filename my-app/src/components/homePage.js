@@ -1,6 +1,10 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { auth } from "../config/firebase";
+import { useContext } from "react";
+import { AuthContext } from "./authContext";
+
+import { useState } from "react";
 
 import { Button, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -14,12 +18,44 @@ import dashboardPic from "../assets/dashboard.png";
 import tagPic from "../assets/tags.png";
 import searchPic from "../assets/search.png";
 
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
+
 const HomePage = () => {
   const navigate = useNavigate();
+  const [errorMSG, seterrorMSG] = useState("");
+  const [error, seterror] = useState(false);
 
-  function goToSignUpPage() {
-    navigate("/newaccount", { replace: true });
+  const { auth2, setAuth } = useContext(AuthContext);
+  const { authStatus, setAuthStatus } = useContext(AuthContext);
+
+  async function goToSignUpPage() {
+    try {
+      await signInWithEmailAndPassword(auth, "abc@gmail.com", "123123");
+      setAuthStatus({
+        type: "signin",
+        auth: auth,
+      });
+      navigate("/dashboard/", { replace: true });
+    } catch (err) {
+      seterror(true);
+      console.log(err.code);
+      if (err.code === "auth/invalid-credential") {
+        seterrorMSG("Error: " + "No Account with theses credentials");
+      } else if (err.code === "auth/invalid-email") {
+        seterrorMSG("Error: " + "Email must be vaild");
+      } else {
+        seterrorMSG("Error: " + err);
+      }
+
+      console.log(err);
+    }
   }
+
+  //navigate("/newaccount", { replace: true });
 
   return (
     <div className="homepage_gradient_background">
@@ -64,7 +100,7 @@ const HomePage = () => {
               color="success"
               variant="contained"
             >
-              Getting Started
+              Demo Now!
             </Button>
           </Box>
 
